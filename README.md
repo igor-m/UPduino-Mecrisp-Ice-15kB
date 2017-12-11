@@ -11,20 +11,20 @@ b. changes for Load/Save with UPduino
 c. experiments with linear io addressing
 d. experiments with 48bit ticks
 e. the ram_test.v prepared for IceCube2 (includes the nucleus.fs already)
-f. replaced the uart.v 
+f. replaced the uart.v
 
 With IceCube2:
 a. create a project
 b. copy the verilog files into the project as the source files
-c. copy the /build directory
+c. copy the /build directory into the project
 d. build the bitstream
 e. flash the bitstream into the UPduino board
 f. upload the basisdefinition15k.fs
-g. 3 save - it saves the actual dictionary to the spi flash, block 3 (block is 64kB)
-h. next time the mecrisp forth loads from block 3
+g. 3 save - it saves the actual dictionary to the spi flash, block 3 (a block size is 64kB)
+h. next time the mecrisp forth loads itself from block 3
 
-You may save in any block higher than 2, it loads upon reset from block 3.
-You may load manually form any block higher than 2.
+You may save in any block higher than 2, it loads upon reset always from block 3.
+You may load manually from any block higher than 2.
 
 For more information see:
 
