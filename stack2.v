@@ -1,4 +1,5 @@
 //`default_nettype none
+// From Mecrisp-Ice repo
 `define WIDTH 16
 
 module stack2(

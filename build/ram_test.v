@@ -1,6 +1,6 @@
-// Modification for full 15kB block ram of the iCE40UP5k
-// includes nucleus.fs from Mecrisp-Ice
-// by IgorM, Dec 2017
+// Modification for full 15kB of block ram for the iCE40UP5k
+// Includes nucleus.fs from Mecrisp-Ice
+// by IgorM, 11 Dec 2017
 
     wire [15:0] insn0, insn1, insn2, insn3, insn4, insn5, insn6, insn7, insn8;
     reg [15:0] insn;
@@ -806,12 +806,12 @@
       2'b10: insn = insn2;
       2'b11: begin
 			if (!c10 & !c9 & !c8) insn = insn3;
-	       	if (!c10 & !c9 &  c8) insn = insn4;
+			if (!c10 & !c9 &  c8) insn = insn4;
 			if (!c10 &  c9 & !c8) insn = insn5;
-	       	if (!c10 &  c9 &  c8) insn = insn6;
+			if (!c10 &  c9 &  c8) insn = insn6;
 			if ( c10 & !c9 & !c8) insn = insn7;
-	       	if ( c10 & !c9 &  c8) insn = insn8;
-	end
+			if ( c10 & !c9 &  c8) insn = insn8;
+			end
 	  
       endcase
     end

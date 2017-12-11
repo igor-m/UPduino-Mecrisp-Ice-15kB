@@ -1,7 +1,7 @@
 
 \ Swapforth Nucleus by James Bowman enhanced with constant folding and inline optimisations by Matthias Koch
-\ Modification for UPduino board by IgorM, Dec 2017
-
+\ Modification for UPduino board (SPI Flash Load/Save) by IgorM, 11 Dec 2017
+\ Not required with IceCube2 build with this repo (this file already included in ram.v)
 \ -----------------------------------------------------------------------------
 \  Low level definitions that are different for HX1K and HX8K and UP5k
 \ -----------------------------------------------------------------------------

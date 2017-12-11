@@ -1,7 +1,8 @@
 \ Definitions in high-level Forth that can be compiled by the small
 \ nucleus itself. They are included into the bitstream for default.
+\ From Mecrisp-Ice repo
 
-\ Modification and Experiments for UPduino Board by IgorM Dec 2017, 15kB version!
+\ Modification and Experiments for UPduino Board by IgorM 11 Dec 2017, 15kB version!
 
 : [']
     ' postpone literal

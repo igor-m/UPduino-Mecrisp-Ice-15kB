@@ -1,4 +1,6 @@
 //`default_nettype none
+// From Mecrisp-Ice repo
+// Mod: interrupt address change for 15kB ram
 
 module j1(
   input wire clk,
