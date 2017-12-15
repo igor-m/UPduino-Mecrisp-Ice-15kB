@@ -4,7 +4,7 @@
 `define WIDTH 16
 
 // Modifications for 15kB block ram, and various other experiments
-// by IgorM Dec 2017
+// by IgorM 11 Dec 2017
 // Mind the SPI Flash on the UPduino board must be wired as below
 // external oscillator 30 MHz
 
@@ -133,17 +133,17 @@ endmodule
 module top(
 			input wire oscillator,
 
-           output wire TXD,        // UART TX
-           input  wire RXD,        // UART RX
+			output wire TXD,        // UART TX
+			input  wire RXD,        // UART RX
 
-           output wire SPICLK,    // Flash SCK  --- fpga spiclk  pin 15
-           input  wire SPISO,     // Flash SDO  --- fpga spisi   pin 17
-           output wire SPISI,     // Flash SDI  --- fpga spiso   pin 14
-           output wire SPISSB,    // Flash CS   --- fpga spissb  pin 16
+			output wire SPICLK,    // Flash SCK  --- fpga spiclk  pin 15
+			input  wire SPISO,     // Flash SDO  --- fpga spisi   pin 17
+			output wire SPISI,     // Flash SDI  --- fpga spiso   pin 14
+			output wire SPISSB,    // Flash CS   --- fpga spissb  pin 16
 
-           output wire PIO1_18,    // IR TXD
-           input  wire PIO1_19,    // IR RXD
-           output wire PIO1_20,    // IR SD
+			output wire PIO1_18,    // IR TXD
+			input  wire PIO1_19,    // IR RXD
+			output wire PIO1_20,    // IR SD
 
            inout wire PORTA0,
            inout wire PORTA1,
@@ -163,7 +163,7 @@ module top(
            inout wire PORTA15,
 
    
-           input wire resetq
+			input wire resetq
 );
 
 
@@ -208,30 +208,30 @@ module top(
 
 // DEFINES for IOs and PERIPHERALs
 
-`define adr_ticksl 		16'd100  // 16'h4000
-`define adr_ticksh 		16'd101  // 16'h8000
+`define adr_ticksl 			16'd100  // 16'h4000
+`define adr_ticksh 			16'd101  // 16'h8000
 `define adr_tickshh 		16'd102  // 
 
 `define adr_tickssl 		16'd105  // 
 `define adr_tickssh 		16'd106  // 
 `define adr_ticksshh 		16'd107  // 
-`define adr_ticksample 	16'd109  // 
+`define adr_ticksample 		16'd109  // 
 
 `define adr_timer1l 		16'd110  // 
 `define adr_timer1h 		16'd111  // 
 `define adr_timer1cl 		16'd112  // 
 `define adr_timer1ch 		16'd113  // 
-`define adr_timer1 		16'd119  // 
+`define adr_timer1 			16'd119  // 
 
-`define adr_uart0 		16'h1000  // 16'h1000
+`define adr_uart0 			16'h1000  // 16'h1000
 
 `define adr_porta_in 		16'd110  // 16'h1
-`define adr_porta_out 	16'd111  // 16'h2
-`define adr_porta_dir 	16'd112  // 16'h4
+`define adr_porta_out 		16'd111  // 16'h2
+`define adr_porta_dir 		16'd112  // 16'h4
  
-`define adr_pios 		16'h8  // 16'h8
+`define adr_pios 			16'h8  // 16'h8
 
-`define adr_util1 		16'h2000  // 16'h2000
+`define adr_util1 			16'h2000  // 16'h2000
 
 
 
@@ -247,31 +247,31 @@ module top(
   always @(posedge clk)
      ticks <= ticks_plus_1;
 
-// sample ticks with now
+// sample the ticks with "now"
 
   always @(posedge clk)
     if (io_wr & (mem_addr == `adr_ticksample))  tickss[47:0] <= ticks;
 
 // Timer1
 
-  reg [31:0] timer1 = 0;
-  reg [31:0] timer1c = 0;
+//  reg [31:0] timer1 = 0;
+//  reg [31:0] timer1c = 0;
 
-  wire [31:0] timer1_plus_1 = timer1 + 1;
-  always @(posedge clk)
-    if (io_wr & (mem_addr == `adr_timer1))  timer1[31:0] <= 0;
-    else
-	timer1 <= timer1_plus_1;
+//  wire [31:0] timer1_plus_1 = timer1 + 1;
+//  always @(posedge clk)
+//    if (io_wr & (mem_addr == `adr_timer1))  timer1[31:0] <= 0;
+//    else
+//	timer1 <= timer1_plus_1;
 
 // Write timer1 compare
-  always @(posedge clk)
-    if (io_wr & (mem_addr == `adr_timer1cl))  timer1c[15:0] <= dout;
-    else 
-    if (io_wr & (mem_addr == `adr_timer1ch))  timer1c[31:16] <= dout;
+//  always @(posedge clk)
+//    if (io_wr & (mem_addr == `adr_timer1cl))  timer1c[15:0] <= dout;
+//    else 
+//    if (io_wr & (mem_addr == `adr_timer1ch))  timer1c[31:16] <= dout;
 
 // Compare timer1 with timer1compare
-  always @(posedge clk) // Generate interrupt on timer1 compare
-    interrupt <= (timer1 == timer1c) ? 1 : 0;
+//  always @(posedge clk) // Generate interrupt on timer1 compare
+//    interrupt <= (timer1 == timer1c) ? 1 : 0;
 
 
 

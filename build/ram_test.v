@@ -1,4 +1,4 @@
-// Modification for full 15kB of block ram for the iCE40UP5k
+// Modification for full 15kB of block ram - for the iCE40UP5k
 // Includes nucleus.fs from Mecrisp-Ice
 // by IgorM, 11 Dec 2017
 
@@ -28,7 +28,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[1:0]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[1:0]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h0a2b024acde988899b1a3ca40c014158b3a79a8b804530b81f8a9a1324cc1201),
@@ -53,7 +54,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[3:2]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[3:2]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h6084ca2020008925115013a308180ab01080830cc1218960114192b4c0900f60),
@@ -78,7 +80,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[5:4]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[5:4]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h0a4050cbc100008bc25188838808101083000082008150c90201088284804b6b),
@@ -103,7 +106,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[7:6]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[7:6]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h173040601a381020b5f4e0202e42703c4a6268691c33a065a043e26108a80b43),
@@ -128,7 +132,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[9:8]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[9:8]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h8052448202820210303321c00303224000a8287280992281000320c102200013),
@@ -153,7 +158,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[11:10]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[11:10]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'hbf813602730134002f1061407300ec044b087f00bb08b505eb80e7823e029000),
@@ -178,7 +184,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[13:12]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[13:12]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h007b5036847340bc10ef04f9807700ac845b006f40bf10f504fb007f401604e9),
@@ -203,7 +210,8 @@
     .RCLK(clk), .RCLKE(1'b1), .RE(1'b1),
     .WCLK(clk), .WCLKE(unlocked), .WE(mem_wr & !mem_addr[12] & !mem_addr[13]),
     .WADDR(mem_addr[11:1]),
-    .MASK(16'h0000), .WDATA(dout[15:14]));
+    //.MASK(16'h0000), 
+	.WDATA(dout[15:14]));
 
   SB_RAM2048x2 #(
     .INIT_0(256'h0000000000000000000000000000000000000000000000000000000000010101),
@@ -805,7 +813,7 @@
       2'b01: insn = insn1;
       2'b10: insn = insn2;
       2'b11: begin
-			if (!c10 & !c9 & !c8) insn = insn3;
+			if (!c10 & !c9 & !c8) insn = insn3;   // Select the 256x16 blocks
 			if (!c10 & !c9 &  c8) insn = insn4;
 			if (!c10 &  c9 & !c8) insn = insn5;
 			if (!c10 &  c9 &  c8) insn = insn6;
