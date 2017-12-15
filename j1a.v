@@ -207,8 +207,8 @@ module top(
 
 // DEFINES for IOs and PERIPHERALs
 
-`define adr_ticksl			16'd100  // 16'h4000
-`define adr_ticksh			16'd101  // 16'h8000
+`define adr_ticksl			16'd100  // 
+`define adr_ticksh			16'd101  // 
 `define adr_tickshh			16'd102  // 
 
 `define adr_tickssl			16'd105  // 
@@ -224,9 +224,9 @@ module top(
 
 `define adr_uart0			16'h1000 // 16'h1000
 
-`define adr_porta_in			16'd110  // 16'h1
-`define adr_porta_out			16'd111  // 16'h2
-`define adr_porta_dir			16'd112  // 16'h4
+`define adr_porta_in			16'd310  // 
+`define adr_porta_out			16'd311  // 
+`define adr_porta_dir			16'd312  // 
  
 `define adr_pios			16'h8    // 16'h8
 
