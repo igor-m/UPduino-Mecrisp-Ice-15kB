@@ -145,24 +145,23 @@ module top(
 			input  wire PIO1_19,    // IR RXD
 			output wire PIO1_20,    // IR SD
 
-           inout wire PORTA0,
-           inout wire PORTA1,
-           inout wire PORTA2,
-           inout wire PORTA3,
-           inout wire PORTA4,
-           inout wire PORTA5,
-           inout wire PORTA6,
-           inout wire PORTA7,
-           inout wire PORTA8,
-           inout wire PORTA9,
-           inout wire PORTA10,
-           inout wire PORTA11,
-           inout wire PORTA12,
-           inout wire PORTA13,
-           inout wire PORTA14,
-           inout wire PORTA15,
-
-   
+			inout wire PORTA0,
+			inout wire PORTA1,
+			inout wire PORTA2,
+			inout wire PORTA3,
+			inout wire PORTA4,
+			inout wire PORTA5,
+			inout wire PORTA6,
+			inout wire PORTA7,
+			inout wire PORTA8,
+			inout wire PORTA9,
+			inout wire PORTA10,
+			inout wire PORTA11,
+			inout wire PORTA12,
+			inout wire PORTA13,
+			inout wire PORTA14,
+			inout wire PORTA15,
+ 
 			input wire resetq
 );
 
@@ -208,30 +207,30 @@ module top(
 
 // DEFINES for IOs and PERIPHERALs
 
-`define adr_ticksl 			16'd100  // 16'h4000
-`define adr_ticksh 			16'd101  // 16'h8000
-`define adr_tickshh 		16'd102  // 
+`define adr_ticksl			16'd100  // 16'h4000
+`define adr_ticksh			16'd101  // 16'h8000
+`define adr_tickshh			16'd102  // 
 
-`define adr_tickssl 		16'd105  // 
-`define adr_tickssh 		16'd106  // 
-`define adr_ticksshh 		16'd107  // 
-`define adr_ticksample 		16'd109  // 
+`define adr_tickssl			16'd105  // 
+`define adr_tickssh			16'd106  // 
+`define adr_ticksshh		16'd107  // 
+`define adr_ticksample		16'd109  // 
 
-`define adr_timer1l 		16'd110  // 
-`define adr_timer1h 		16'd111  // 
-`define adr_timer1cl 		16'd112  // 
-`define adr_timer1ch 		16'd113  // 
-`define adr_timer1 			16'd119  // 
+`define adr_timer1l			16'd110  // 
+`define adr_timer1h			16'd111  // 
+`define adr_timer1cl		16'd112  // 
+`define adr_timer1ch		16'd113  // 
+`define adr_timer1			16'd119  // 
 
-`define adr_uart0 			16'h1000  // 16'h1000
+`define adr_uart0			16'h1000 // 16'h1000
 
-`define adr_porta_in 		16'd110  // 16'h1
-`define adr_porta_out 		16'd111  // 16'h2
-`define adr_porta_dir 		16'd112  // 16'h4
+`define adr_porta_in		16'd110  // 16'h1
+`define adr_porta_out		16'd111  // 16'h2
+`define adr_porta_dir		16'd112  // 16'h4
  
-`define adr_pios 			16'h8  // 16'h8
+`define adr_pios			16'h8    // 16'h8
 
-`define adr_util1 			16'h2000  // 16'h2000
+`define adr_util1			16'h2000 // 16'h2000
 
 
 
@@ -345,47 +344,26 @@ module top(
 
   // ######   IO PORTS   ######################################
 
-  /*        bit READ            WRITE
-
-      0001  0   PMOD in
-      0002  1   PMOD out        PMOD out
-      0004  2   PMOD dir        PMOD dir
-      0008  3   misc.out        misc.out
-
-      0010  4   header 1 in
-      0020  5   header 1 out    header 1 out
-      0040  6   header 1 dir    header 1 dir
-      0080  7
-
-      0100  8   header 2 in
-      0200  9   header 2 out    header 2 out
-      0400  10  header 2 dir    header 2 dir
-      0800  11
-
-      1000  12  UART RX         UART TX
-      2000  13  misc.in
-      4000  14  ticksl          clear ticks
-      8000  15  ticksh
-  */
-
+// READ REGISTERS
   assign io_din =
 
-    ((mem_addr == `adr_porta_in) ?          porta_in	: 16'd0) |
-    ((mem_addr == `adr_porta_out) ?         porta_out	: 16'd0) |
-    ((mem_addr == `adr_porta_dir) ?         porta_dir	: 16'd0) |
+    ((mem_addr == `adr_porta_in) ?				porta_in	: 16'd0) |
+    ((mem_addr == `adr_porta_out) ?				porta_out	: 16'd0) |
+    ((mem_addr == `adr_porta_dir) ?				porta_dir	: 16'd0) |
 
-    ((mem_addr == `adr_pios) ? { 2'd0, LEDS, PIOS}		: 16'd0) |
+    ((mem_addr == `adr_pios) ?					{ 2'd0, LEDS, PIOS}		: 16'd0) |
 
-    ((mem_addr == `adr_uart0) ? { 8'd0, uart0_data}	: 16'd0) |
+    ((mem_addr == `adr_uart0) ?					{ 8'd0, uart0_data}		: 16'd0) |
     ((mem_addr == `adr_util1) ? {10'd0, random, RTS, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
 
-    ((mem_addr == `adr_tickssl) ?         tickss[15:0]	: 16'd0)|
-    ((mem_addr == `adr_tickssh) ?         tickss[31:16]	: 16'd0)|
-    ((mem_addr == `adr_ticksshh) ?        tickss[47:32]	: 16'd0) ;
+    ((mem_addr == `adr_tickssl) ?				tickss[15:0]	: 16'd0)|
+    ((mem_addr == `adr_tickssh) ?				tickss[31:16]	: 16'd0)|
+    ((mem_addr == `adr_ticksshh) ?				tickss[47:32]	: 16'd0) ;
 
   // Very few gates needed: Simply trigger warmboot by any IO access to $8000 / $8001 / $8002 / $8003.
   // SB_WARMBOOT _sb_warmboot ( .BOOT(io_wr & mem_addr[15]), .S1(mem_addr[1]), .S0(mem_addr[0]) );
 
+// WRITE REGISTERS
   always @(posedge clk) begin
 
     if (io_wr & (mem_addr == `adr_porta_out))  porta_out <= dout;
