@@ -213,20 +213,20 @@ module top(
 
 `define adr_tickssl			16'd105  // 
 `define adr_tickssh			16'd106  // 
-`define adr_ticksshh		16'd107  // 
-`define adr_ticksample		16'd109  // 
+`define adr_ticksshh			16'd107  // 
+`define adr_ticksample			16'd109  // 
 
 `define adr_timer1l			16'd110  // 
 `define adr_timer1h			16'd111  // 
-`define adr_timer1cl		16'd112  // 
-`define adr_timer1ch		16'd113  // 
+`define adr_timer1cl			16'd112  // 
+`define adr_timer1ch			16'd113  // 
 `define adr_timer1			16'd119  // 
 
 `define adr_uart0			16'h1000 // 16'h1000
 
-`define adr_porta_in		16'd110  // 16'h1
-`define adr_porta_out		16'd111  // 16'h2
-`define adr_porta_dir		16'd112  // 16'h4
+`define adr_porta_in			16'd110  // 16'h1
+`define adr_porta_out			16'd111  // 16'h2
+`define adr_porta_dir			16'd112  // 16'h4
  
 `define adr_pios			16'h8    // 16'h8
 
