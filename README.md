@@ -4,11 +4,13 @@
 An Experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
 
 Essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
+
 Complete setup for a build with IceStorm tools under Linux.
 
 Works fine at 30MHz (an external oscillator) and 115k2 serial.
-The PLL clocking unreliable yet, issues under investigation.
-It may require better VCCPLL blocking and pcb layout.
+
+The internal PLL clocking unreliable yet, the issues under investigation.
+It may require a better VCCPLL decoupling and pcb layout.
 
 Modifications done:
 1. full 15kB block ram usage now
@@ -28,14 +30,21 @@ Within IceCube2:
 7. "3 save" - it saves the current dictionary into the onboard SPIflash, block #3
 8. next time upon reset the Mecrisp forth always loads itself from the block #3
 
-You may save in any block higher than #2 (ie. "10 save"). A block here is 64kB.
+You may save in any block higher than #2 (ie. "10 save"). 
+
+A block here is 64kB.
+
 It loads upon reset always from block #3.
-You may load a dictionary manually from any block higher than #3 (ie. "7 load").
+
+You may load a dictionary manually from any block higher than #2 (ie. "7 load").
+
 Mind the UPduino's SPIflash is 4MB large.
+
 The save/load always work with complete 15kB (the content of entire ram).
 
 The best Serial settings for fastest upload: 115k2, 8n2.
-Used with TeraTerm, LF/LF, 50ms line delay, when 8n1 used set char delay to 1ms.
+
+Used with ie. with TeraTerm: LF/LF, 50ms line transmit delay, when 8n1 used set char delay to 1ms.
 
 For more information see:
 
