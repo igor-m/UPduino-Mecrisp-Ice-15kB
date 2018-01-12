@@ -1,16 +1,16 @@
 #!/bin/bash
 
 echo "Synthesize design..."
-yosys  -q -p "synth_ice40 -top top -blif j1a.blif -abc2" j1a.v uart.v j1.v stack2.v 
+yosys  -q -p "synth_ice40 -top top -blif j1a.blif -abc2" j1a.v j1.v stack2.v uart.v  
 
 echo "Place and Route..."
-arachne-pnr -r -p ja1.pcf j1a.blif -o j1a.txt -d 5k
+arachne-pnr -r -p j1a.pcf j1a.blif -o j1a.txt -d 5k
 
 echo "Create Bitstream..."
 icepack j1a.txt j1a0.bin
 # icemulti -p0 j1a0.bin > j1a.bin
 
 echo "Timing Analysis..."
-icetime -c 48 -t -d up5k -r time.txt j1a.txt 
+icetime -c 36 -t -d up5k -r time.txt j1a.txt 
 
-echo "Finished."
+echo "Finished!"

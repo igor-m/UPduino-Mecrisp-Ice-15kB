@@ -1,18 +1,22 @@
 # UPduino Mecrisp-Ice with full 15kB ram
 
 
-An Experimental version of the Mecrisp-Ice Forth running on the J1a processor.
+An Experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
 
 Essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
-Works fine at 30MHz (an external oscillator) and 115k2 serial.
+Complete setup for a build with IceStorm tools under Linux.
 
-Modification by IgorM:
-1. for full 15kB block ram usage
-2. changes for Load/Save with UPduino
+Works fine at 30MHz (an external oscillator) and 115k2 serial.
+The PLL clocking unreliable yet, issues under investigation.
+It may require better VCCPLL blocking and pcb layout.
+
+Modifications done:
+1. full 15kB block ram usage now
+2. changes for Load/Save with UPduino (complete dictionary saved into the SPI flash)
 3. experiments with linear io addressing
 4. experiments with 48bit ticks
-5. the ram_test.v prepared for IceCube2 (includes the nucleus.fs already)
-6. replaced the uart.v with a more stable version
+5. the ram_test.v prepared for IceCube2 and IceStorm (includes the nucleus.fs image)
+6. replaced the original uart.v with a more stable version
 
 Within IceCube2:
 1. create a project
@@ -21,11 +25,17 @@ Within IceCube2:
 4. build the bitstream
 5. flash the bitstream into the UPduino board
 6. upload the basisdefinition15k.fs
-7. 3 save - it saves the actual dictionary to the spi flash, block 3 (a block size is 64kB)
-8. next time the mecrisp forth loads itself from block 3
+7. "3 save" - it saves the current dictionary into the onboard SPIflash, block #3
+8. next time upon reset the Mecrisp forth always loads itself from the block #3
 
-You may save in any block higher than 2, it loads upon reset always from block 3.
-You may load manually from any block higher than 2.
+You may save in any block higher than #2 (ie. "10 save"). A block here is 64kB.
+It loads upon reset always from block #3.
+You may load a dictionary manually from any block higher than #3 (ie. "7 load").
+Mind the UPduino's SPIflash is 4MB large.
+The save/load always work with complete 15kB (the content of entire ram).
+
+The best Serial settings for fastest upload: 115k2, 8n2.
+Used with TeraTerm, LF/LF, 50ms line delay, when 8n1 used set char delay to 1ms.
 
 For more information see:
 
@@ -56,11 +66,11 @@ here . 7042  ok.
 unused . 8318  ok.
 ```
 
-Thanks Matthias for his support with Mecrisp-Ice, and James for providing the j1a forth cpu.
+Thanks Matthias for his support with Mecrisp-Ice, and James for providing the j1a CPU.
 
 Provided as-is.
 
 No warranties of any kind are provided.
 
-IgorM, Dec 2017
+by IgorM, Dec 2017
 
