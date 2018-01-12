@@ -1,0 +1,91 @@
+
+icetime topological timing analysis report
+==========================================
+
+Report for critical path:
+-------------------------
+
+        loop-start at net_30822
+        t6225 (LocalMux) I -> O: 0.330 ns
+        inmux_8_14_34694_34754 (InMux) I -> O: 0.260 ns
+        t1094 (CascadeMux) I -> O: 0.000 ns
+        lc40_8_14_5 (LogicCell40) in2 -> lcout: 0.379 ns
+1000000.968 ns net_30822 (_j1.insn[14])
+        odrv_8_14_30822_33920 (Odrv12) I -> O: 0.540 ns
+        t6230 (Sp12to4) I -> O: 0.449 ns
+        t6232 (Span4Mux_h3) I -> O: 0.231 ns
+        t6231 (LocalMux) I -> O: 0.330 ns
+        inmux_5_16_24081_24119 (InMux) I -> O: 0.260 ns
+        lc40_5_16_2 (LogicCell40) in1 -> lcout: 0.400 ns
+1000003.177 ns net_20203 ($abc$25320$n2941_1)
+        t4631 (LocalMux) I -> O: 0.330 ns
+        inmux_5_16_24099_24109 (InMux) I -> O: 0.260 ns
+        lc40_5_16_0 (LogicCell40) in3 -> lcout: 0.316 ns
+1000004.082 ns net_20201 ($abc$25320$n3667)
+        odrv_5_16_20201_8822 (Odrv12) I -> O: 0.540 ns
+        t4635 (LocalMux) I -> O: 0.330 ns
+        inmux_8_16_34950_34970 (InMux) I -> O: 0.260 ns
+        t1101 (CascadeMux) I -> O: 0.000 ns
+        lc40_8_16_0 (LogicCell40) in2 -> lcout: 0.379 ns
+1000005.590 ns net_31063 ($abc$25320$n3666_1)
+        t6326 (LocalMux) I -> O: 0.330 ns
+        inmux_9_16_38766_38799 (InMux) I -> O: 0.260 ns
+        lc40_9_16_0 (LogicCell40) in0 -> lcout: 0.449 ns
+1000006.628 ns net_34894 ($abc$25320$n3665_1)
+        t7898 (LocalMux) I -> O: 0.330 ns
+        inmux_9_15_38643_38690 (InMux) I -> O: 0.260 ns
+        t1261 (CascadeMux) I -> O: 0.000 ns
+        lc40_9_15_2 (LogicCell40) in2 -> lcout: 0.379 ns
+1000007.596 ns net_34773 ($abc$25320$n3673)
+        t7623 (LocalMux) I -> O: 0.330 ns
+        inmux_9_15_38645_38714 (InMux) I -> O: 0.260 ns
+        t1265 (CascadeMux) I -> O: 0.000 ns
+        lc40_9_15_6 (LogicCell40) in2 -> lcout: 0.379 ns
+1000008.563 ns net_34777 (_j1.pcN[2])
+        odrv_9_15_34777_34800 (Odrv4) I -> O: 0.372 ns
+        t7829 (Span4Mux_h4) I -> O: 0.316 ns
+        t7828 (Span4Mux_v4) I -> O: 0.372 ns
+        t7827 (Span4Mux_h0) I -> O: 0.147 ns
+        t7826 (Span4Mux_v4) I -> O: 0.372 ns
+        t7825 (Span4Mux_h0) I -> O: 0.147 ns
+        t7824 (Span4Mux_v4) I -> O: 0.372 ns
+        t7847 (Span4Mux_h4) I -> O: 0.316 ns
+        t7846 (Span4Mux_h4) I -> O: 0.316 ns
+        t7845 (Span4Mux_h4) I -> O: 0.316 ns
+        t7852 (Span4Mux_h0) I -> O: 0.147 ns
+        t7851 (Span4Mux_v1) I -> O: 0.203 ns
+        t7850 (IoSpan4Mux) I -> O: 0.323 ns
+        t7859 (Span4Mux_h0) I -> O: 0.147 ns
+        t7858 (Span4Mux_v4) I -> O: 0.372 ns
+        t7863 (Span4Mux_h0) I -> O: 0.147 ns
+        t7862 (Span4Mux_v4) I -> O: 0.372 ns
+        t7872 (Span4Mux_h0) I -> O: 0.147 ns
+        t7871 (Span4Mux_v4) I -> O: 0.372 ns
+        t7878 (Span4Mux_h0) I -> O: 0.147 ns
+        t7877 (Span4Mux_v4) I -> O: 0.372 ns
+        t7885 (Span4Mux_h0) I -> O: 0.147 ns
+        t7884 (Span4Mux_v4) I -> O: 0.372 ns
+        t7893 (Span4Mux_h0) I -> O: 0.147 ns
+        t7892 (Span4Mux_v4) I -> O: 0.372 ns
+        t7891 (Span4Mux_h2) I -> O: 0.203 ns
+        t7890 (LocalMux) I -> O: 0.330 ns
+        inmux_19_27_77896_77930 (InMux) I -> O: 0.260 ns
+        t2704 (CascadeMux) I -> O: 0.000 ns
+1000016.187 ns net_77930_cascademuxed
+        ram_19_27 (SB_RAM40_4K) RADDR[2] [setup]: 0.290 ns
+1000016.477 ns dangling_wire_397
+
+Resolvable net names on path:
+1000000.968 ns ..1000002.777 ns _j1.insn[14]
+1000003.177 ns ..1000003.766 ns $abc$25320$n2941_1
+1000004.082 ns ..1000005.211 ns $abc$25320$n3667
+1000005.590 ns ..1000006.179 ns $abc$25320$n3666_1
+1000006.628 ns ..1000007.217 ns $abc$25320$n3665_1
+1000007.596 ns ..1000008.185 ns $abc$25320$n3673
+1000008.563 ns ..1000016.187 ns _j1.pcN[2]
+              RDATA[11] -> _bn26.rd[11]
+               RDATA[3] -> _bn26.rd[3]
+
+Total number of logic levels: 8
+Total path delay: 1000016.48 ns (0.00 MHz)
+
