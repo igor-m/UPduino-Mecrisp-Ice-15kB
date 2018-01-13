@@ -7,6 +7,9 @@ Essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
 
 Complete setup for a build with IceStorm tools under Linux.
 
+The build does not require any tools except IceCube2 or IceStorm. The ram source
+includes the nucleus.fs words image (Mecrisp-Ice Forth).
+
 Works fine at 30MHz (an external oscillator) and 115k2 serial.
 
 The internal PLL clocking unreliable yet, the issues under investigation.
@@ -16,7 +19,7 @@ Modifications done:
 1. full 15kB block ram usage now
 2. changes for Load/Save with UPduino (complete dictionary saved into the SPI flash)
 3. experiments with linear io addressing
-4. experiments with 48bit ticks
+4. experiments with 48bit ticks, atomic timestamp with "now"
 5. the ram_test.v prepared for IceCube2 and IceStorm (includes the nucleus.fs image)
 6. replaced the original uart.v with a more stable version
 
@@ -27,26 +30,25 @@ Within IceCube2:
 4. build the bitstream
 5. flash the bitstream into the UPduino board
 6. upload the basisdefinition15k.fs
-7. "3 save" - it saves the current dictionary into the onboard SPIflash, block #3
+7. "3 save" - it saves the current dictionary into the onboard SPI flash, block #3
 8. next time upon reset the Mecrisp forth always loads itself from the block #3
 
-You may save in any block higher than #2 (ie. "10 save"). 
-
+You may save your actual dictionary in any block higher than #2 with "save" (ie. "10 save").
 A block here is 64kB.
 
-It loads upon reset always from block #3.
+When the block #3 contains a saved dictionary, it loads the disctionary upon reset from there.
 
-You may load a dictionary manually from any block higher than #2 (ie. "7 load").
+You may load a dictionary manually from any block higher than #2 with "load" (ie. "7 load").
 
-Mind the UPduino's SPIflash is 4MB large.
+Mind the UPduino's SPI flash is only 4MB large.
 
 The save/load always work with complete 15kB (the content of entire ram).
 
-The best Serial settings for fastest upload: 115k2, 8n2.
+The best Serial settings for fastest upload: 115k2, 8n2 (2 stopbits).
 
-Used with ie. with TeraTerm: LF/LF, 50ms line transmit delay, when 8n1 used set char delay to 1ms.
+Used with ie. TeraTerm: set LF/LF, 50ms line tx delay, when 8n1 used set char delay to 1ms.
 
-For more information see:
+For more information on Mecrisp-Ice and Swapforth (J1a CPU model) you may see:
 
 http://mecrisp.sourceforge.net/
 

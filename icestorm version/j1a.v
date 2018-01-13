@@ -234,7 +234,7 @@ module top(
 
 
 
-  // ######   TICKS   #########################################
+  // ######   48 bit TICKS   #########################################
 
   reg  [47:0] ticks = 0;
   reg  [47:0] tickss = 0;
@@ -295,12 +295,14 @@ module top(
      .tx_data(dout[7:0]),
      .rx_data(uart0_data));
 
-  // ######   LEDS & PIOS   ###################################
+  // ######   PIOS   ###################################
 
   reg [4:0] PIOS;
-
   assign { PIO1_20, PIO1_18, SPICLK, SPISI, SPISSB} = PIOS;
  
+
+// DISABLE THE RING OSCILLATOR WHEN PROVIDING THE TIMING ANALYSIS
+// WITH ICESTORM's ICETIME
 
   // ######   RING OSCILLATOR   ###############################
 

@@ -29,7 +29,7 @@ module j1(
 
   reg [13:0] pc, pcN;           // Program Counter
 
-  wire [15:0] insn = interrupt ? 16'h5DFF : insn_from_memory;  // Interrupt: Execute "Call 2FFE".
+  wire [15:0] insn = interrupt ? 16'h5DFF : insn_from_memory;  // Interrupt: Execute "Call 3BFE" - change for 15kB ram, IgorM
   wire [13:0] pc_plus_1 = pc + {13'b0, ~interrupt};            // Do not increment PC for interrupts to continue later at the same location.
   wire fetch = pc[13] & ~interrupt;                            // Memory fetch data on pc[13] only valid if this is no interrupt entry.
 

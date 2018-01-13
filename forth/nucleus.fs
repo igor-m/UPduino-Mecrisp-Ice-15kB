@@ -7,6 +7,7 @@
 \ -----------------------------------------------------------------------------
 
 \ Execute needs to be the first definition in HX8K and UP5k as its address is hardwired.
+\ Minor changes in load, IgorM
 
 header execute : execute >r ;
 
@@ -1286,9 +1287,9 @@ header spi>
 
 header load
 : load ( sector -- )
- h# AB >spi  \ Release from Deep Power Down Mode
+ h# AB >spi  \ Release from Deep Power Down Mode, IgorM
  idle
-  d# 0  begin 1+ dup d# 1000 =  until drop \ delay 100us
+  d# 0  begin 1+ dup d# 500 =  until drop \ delay 100us
  
   h# 03 >spi \ Read command
         >spi  \ Sector number
@@ -1304,7 +1305,7 @@ header load
     begin
       spi> spi> d# 8 lshift or over !
       d# 2 +
-      dup h# 3C00 =    \ IM was 3000
+      dup h# 3C00 =    \ IgorM for 15kB ram
     until
 
   then

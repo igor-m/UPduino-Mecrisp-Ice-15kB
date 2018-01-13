@@ -7,6 +7,7 @@
 // by IgorM 11 Dec 2017
 // Mind the SPI Flash on the UPduino board must be wired as below
 // external oscillator 30 MHz
+// removed obsolate HW, 13 Jan 2018
 
 module SB_RAM256x16(
 	output wire [15:0] RDATA,
@@ -170,6 +171,7 @@ module top(
   wire clk ;
   assign clk = oscillator;
 
+ // PLL not working reliably yet
  //my_pll my_pll_inst(.REFERENCECLK(oscillator),
  //                  .PLLOUTCORE(Hclk),
  //                  .PLLOUTGLOBAL(),
@@ -234,7 +236,7 @@ module top(
 
 
 
-  // ######   TICKS   #########################################
+  // ######   48 bit TICKS   #########################################
 
   reg  [47:0] ticks = 0;
   reg  [47:0] tickss = 0;
@@ -250,30 +252,6 @@ module top(
 
   always @(posedge clk)
     if (io_wr & (mem_addr == `adr_ticksample))  tickss[47:0] <= ticks;
-
-// Timer1
-
-//  reg [31:0] timer1 = 0;
-//  reg [31:0] timer1c = 0;
-
-//  wire [31:0] timer1_plus_1 = timer1 + 1;
-//  always @(posedge clk)
-//    if (io_wr & (mem_addr == `adr_timer1))  timer1[31:0] <= 0;
-//    else
-//	timer1 <= timer1_plus_1;
-
-// Write timer1 compare
-//  always @(posedge clk)
-//    if (io_wr & (mem_addr == `adr_timer1cl))  timer1c[15:0] <= dout;
-//    else 
-//    if (io_wr & (mem_addr == `adr_timer1ch))  timer1c[31:16] <= dout;
-
-// Compare timer1 with timer1compare
-//  always @(posedge clk) // Generate interrupt on timer1 compare
-//    interrupt <= (timer1 == timer1c) ? 1 : 0;
-
-
-
 
  // ######   PORTA   ###########################################
 
@@ -318,14 +296,11 @@ module top(
      .tx_data(dout[7:0]),
      .rx_data(uart0_data));
 
-  // ######   LEDS & PIOS   ###################################
+  // ######  PIOS   ###################################
 
-  reg [5:0] PIOS;
-  wire CTS, RTS;
-  assign {CTS, PIO1_20, PIO1_18, SPICLK, SPISI, SPISSB} = PIOS;
-  reg [7:0] LEDS = 0;
-
-
+  reg [4:0] PIOS;
+  assign {PIO1_20, PIO1_18, SPICLK, SPISI, SPISSB} = PIOS;
+ 
   // ######   RING OSCILLATOR   ###############################
 
   wire [1:0] buffers_in, buffers_out;
@@ -351,10 +326,10 @@ module top(
     ((mem_addr == `adr_porta_out) ?				porta_out	: 16'd0) |
     ((mem_addr == `adr_porta_dir) ?				porta_dir	: 16'd0) |
 
-    ((mem_addr == `adr_pios) ?					{ 2'd0, LEDS, PIOS}		: 16'd0) |
+    ((mem_addr == `adr_pios) ?					{ 11'd0, PIOS}		: 16'd0) |
 
     ((mem_addr == `adr_uart0) ?					{ 8'd0, uart0_data}		: 16'd0) |
-    ((mem_addr == `adr_util1) ? {10'd0, random, RTS, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
+    ((mem_addr == `adr_util1) ? {10'd0, random, 1'b1, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
 
     ((mem_addr == `adr_tickssl) ?				tickss[15:0]	: 16'd0)|
     ((mem_addr == `adr_tickssh) ?				tickss[31:16]	: 16'd0)|
@@ -368,7 +343,7 @@ module top(
 
     if (io_wr & (mem_addr == `adr_porta_out))  porta_out <= dout;
     if (io_wr & (mem_addr == `adr_porta_dir))  porta_dir <= dout;    
-    if (io_wr & (mem_addr == `adr_pios))       {LEDS, PIOS} <= dout[13:0];
+    if (io_wr & (mem_addr == `adr_pios))       {PIOS} <= dout[4:0];
 
   end
 

@@ -271,8 +271,8 @@ allot here constant BUF
     loop
 ; immediate
 
-: ms   ( u -- ) 0 do 2727 0 do loop loop ; \ 11 cycles per loop run. 1 ms * 36 MHz / 11 = 3272.7
-: leds ( x -- ) 6 lshift 8 io@ $3f and or 8 io! ;
+: ms   ( u -- ) 0 do 2727 0 do loop loop ; \ 11 cycles per loop run. 30 MHz / 11 = 2727
+\ : leds ( x -- ) 6 lshift 8 io@ $3f and or 8 io! ;
 
 \ : now   ( -- ) 0 $4000 io! ;
 \ : ticks ( -- u ) $4000 io@ ;
@@ -285,15 +285,13 @@ allot here constant BUF
 : ticksl ( -- u ) 105 io@ ;
 : ticksh ( -- u ) 106 io@ ;
 : tickshh ( -- u ) 107 io@ ;
-\ : ticksch ( -- u ) 103 io@ ;
-\ : test_ticks 0 do now 25 ms ticksl ticksh 30 sm/rem . ." usecs" drop cr loop ;
-\ now 2650 FAC .FAC cr cr ticksl ticksh 30000 sm/rem . ." msecs"
+
 \ : delay ( u -- ) begin dup ticks u< until drop ;
 
 : randombit ( -- 0 | 1 ) $2000 io@ $20 and 5 rshift ;
 : random ( -- x ) 0  16 0 do 2* randombit or 100 0 do loop loop ;
 
-$608C $3BFE ! \ Location $3BFE is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BFE ! \ Location $3BFE (15kB ram) is the interrupt vector ! Place ALU exit opcode here.
 
 : 2variable
     create 2 cells allot
@@ -344,9 +342,9 @@ $608C $3BFE ! \ Location $3BFE is an interrupt vector ! Place ALU exit opcode he
 
 \ #######   Flash   ###########################################
 
-\ Save memory image to SPI Flash - UPduino, N25Q032A flash
+\ Save memory image to SPI Flash - UPduino, N25Q032A 4MB SPI flash
 
-: waitspi 
+: waitspi  \ changes for UPduino board, IgorM
   begin
     $05 >spi \ Read Flag status register
     spi> $01 and 0= \ WIP: Write in Progress.
@@ -361,9 +359,9 @@ $608C $3BFE ! \ Location $3BFE is an interrupt vector ! Place ALU exit opcode he
 
 : erase 
   dup 2 u> if \ Never overwrite bitstream !
-    $AB >spi \ Release from Deep Power Down
+    $AB >spi \ Release from Deep Power Down, IgorM
 	idle
-    0  begin 1+ dup 2000 =  until drop  \ delay ~100us
+    0  begin 1+ dup 500 =  until drop  \ delay ~100us
     spiwe
     $D8 >spi \ Sector erase
         >spi  \ Sector number
@@ -378,11 +376,11 @@ $608C $3BFE ! \ Location $3BFE is an interrupt vector ! Place ALU exit opcode he
   dup 2 u> if \ Never overwrite bitstream !
 
     dup erase
-    0      \ 12 kb in 256 byte pages
+    0      \ 
     begin
       spiwe
 
-      $02 >spi \ Page program, 256 Bytes
+      $02 >spi \ Page program
      over >spi  \ Sector number
      dup
  8 rshift >spi   \ Address high
@@ -397,7 +395,7 @@ $608C $3BFE ! \ Location $3BFE is an interrupt vector ! Place ALU exit opcode he
       idle
       waitspi
 
-      dup $3C00 =
+      dup $3C00 =    \ for 15kB ram
     until
     2drop
 

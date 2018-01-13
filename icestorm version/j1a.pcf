@@ -6,17 +6,17 @@ set_io oscillator 3
 # Use 10k pullup and 100nF capacitor against GND
 set_io reset 9 
 
-# Serial 115k2 8n1, better use 470-1k resistors in series
+# Serial 115k2 8n2, better use 470-1k resistors in series
 set_io RXD 47  
 set_io TXD 12 
 
 # Do not change these SPI flash pins!
 set_io SPICLK 15 
+set_io SPISSB 16 
 set_io SPISI 14  
-set_io SPISSB 16  
 set_io SPISO 17  
  
-# Ired
+# InfraRed
 set_io PIO1_18 43
 set_io PIO1_19 6
 set_io PIO1_20 36
