@@ -1,7 +1,8 @@
 // Modification for full 15kB of block ram - for the iCE40UP5k
 // Includes nucleus.fs from Mecrisp-Ice
 // by IgorM, 11 Dec 2017
-// fixes IgorM 11 Jan 2018
+// fixes IgorM, 11 Jan 2018
+// fix: address decoder latch, DaveS and CliffordW, 18 jan 2018
 
     wire [15:0] insn0, insn1, insn2, insn3, insn4, insn5, insn6, insn7, insn8;
     wire [15:0] insn;
@@ -809,6 +810,7 @@
 
     always @*
     begin
+	insn = 16'bx;  // address latch fix by CW and DS
       casez ({c12, c11}) // Depending on memory address, select different RAM blocks.
       2'b00: insn = insn0;
       2'b01: insn = insn1;

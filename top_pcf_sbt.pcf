@@ -1,0 +1,26 @@
+# ##############################################################################
+
+# iCEcube PCF
+
+# Version:            2017.08.27940
+
+# File Generated:     Jan 11 2018 12:41:26
+
+# Family & Device:    iCE40UP5K
+
+# Package:            SG48
+
+# ##############################################################################
+
+###IOSet List 10
+set_io RXD 47 -io_std SB_LVCMOS -pullup yes -pullup_resistor 10K
+set_io SPICLK 15 -io_std SB_LVCMOS
+set_io SPISI 14 -io_std SB_LVCMOS
+set_io TXD 12 -io_std SB_LVCMOS
+set_io oscillator 3 -io_std SB_LVCMOS
+set_io SPISSB 16 -io_std SB_LVCMOS -pullup yes -pullup_resistor 100K
+set_io ctrl_q 11 -io_std SB_LVCMOS
+set_io SPISO 17 -io_std SB_LVCMOS
+set_io fcpu 42 -io_std SB_LVCMOS
+set_io reset 9 -io_std SB_LVCMOS -pullup yes -pullup_resistor 10K
+

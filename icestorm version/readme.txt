@@ -1,12 +1,17 @@
-This is an IceStorm version ready to build.
-It does not require any other tools to be installed except IceStorm tools.
+UPduino Mecrisp-Ice with full 15kB block ram.
+---------------------------------------------
+
+An Experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
+
+This is an IceStorm version for UP5k/15kB ready to build.
+
+It does not require any other tools to be installed except the latest IceStorm tools.
+
+The ram source contains the nucleus.fs image (from Mecrisp-Ice).
+
+The size is 541-557 PLBs, and the timing estimate 32 - 40MHz based on the arachne seed.
 
 Build it with the "compile" script. You will get the bitstream binary "j1a0.bin".
 
-Since iCE40UP5K variant in IceStorm is still an experimental version, the arachne-pnr 
-shoots errors when messing with source. Needs some investigation therefore.
-Icetime indicates an issue too.
 
-Not tested on real HW yet unless the UP5k version will be stable.
-
-IgorM, 11 Jan 2018
+IgorM, 18 Jan 2018

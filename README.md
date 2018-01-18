@@ -12,10 +12,8 @@ includes the nucleus.fs words image (Mecrisp-Ice Forth).
 
 Works fine at 30MHz (an external oscillator) and 115k2 serial.
 
-The internal PLL clocking unreliable yet, the issues under investigation.
 It may require a better VCCPLL decoupling and pcb layout.
-(Update 14.1.2018: works with PLL at 25MHz and pico_uart.v, the board enhanced
-with better decoupling).
+(Update 16.1.2018: works with PLL at 30MHz, the board enhanced with a better decoupling).
 
 Modifications done:
 1. full 15kB block ram usage now
