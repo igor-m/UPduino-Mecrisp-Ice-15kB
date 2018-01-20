@@ -13,5 +13,9 @@ The size is 541-557 PLBs, and the timing estimate 32 - 40MHz based on the arachn
 
 Build it with the "compile" script. You will get the bitstream binary "j1a0.bin".
 
+Works at 20MHz external xtal oscillator.
+
+Does not work at 30MHz yet..
+
 
 IgorM, 18 Jan 2018

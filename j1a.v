@@ -277,7 +277,17 @@ module top(
   SB_IO #(.PIN_TYPE(6'b1010_01)) ioa15 (.PACKAGE_PIN(PORTA15), .D_OUT_0(porta_out[15]), .D_IN_0(porta_in[15]), .OUTPUT_ENABLE(porta_dir[15]));  
   
 
-  // ######   UART   ##########################################
+// ######   UART   ##########################################
+
+  // an RXD input synchroniser
+
+  reg rxd1, rxd2, rxd3;
+  always @(posedge clk)
+    begin
+    rxd1 <= RXD;
+    rxd2 <= rxd1;
+    rxd3 <= rxd2;
+    end 
 
   wire uart0_valid, uart0_busy;
   wire [7:0] uart0_data;
@@ -287,7 +297,7 @@ module top(
   buart _uart0 (
      .clk(clk),
      .resetq(1'b1),
-     .rx(RXD),
+     .rx(rxd3),
      .tx(TXD),
      .rd(uart0_rd),
      .wr(uart0_wr),
