@@ -9,11 +9,11 @@ It does not require any other tools to be installed except the latest IceStorm t
 
 The ram source contains the nucleus.fs image (from Mecrisp-Ice).
 
-The size is 541-557 PLBs, and the timing estimate 32 - 40MHz based on the arachne seed.
+The sizes are 541-557 PLBs, and the timing estimates 19-22MHz based on the arachne's seed.
 
 Build it with the "compile" script. You will get the bitstream binary "j1a0.bin".
 
-Works at 20MHz external xtal oscillator.
+Works at 20MHz external xtal oscillator fine.
 
 Does not work at 30MHz yet..
 

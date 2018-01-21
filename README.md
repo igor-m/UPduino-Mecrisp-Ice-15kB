@@ -27,7 +27,7 @@ Within IceCube2:
 1. create a project
 2. copy the verilog files into the project as the source files
 3. copy the /build directory into the project
-4. build the bitstream
+4. build the bitstream (size ~383 PLBs, and the timing estimate ~31.5MHz)
 5. flash the bitstream into the UPduino board
 6. upload the basisdefinition15k.fs
 7. "3 save" - it saves the current dictionary into the onboard SPI flash, block #3
