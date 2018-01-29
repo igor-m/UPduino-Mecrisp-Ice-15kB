@@ -8,6 +8,7 @@
 
 \ Execute needs to be the first definition in HX8K and UP5k as its address is hardwired.
 \ Minor changes in load, IgorM
+\ 29 Jan 2018 - (sliteral) fix [MK]
 
 header execute : execute >r ;
 
@@ -626,10 +627,10 @@ header s,
 ;
 
 : (sliteral)
-    r>
-    count
-    2dup+ aligned
-    >r
+   r> 2/ 2*
+   count
+   2dup+ aligned
+   >r
 ;
 
 header-imm sliteral
