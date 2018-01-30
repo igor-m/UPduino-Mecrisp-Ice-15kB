@@ -8,6 +8,7 @@ Essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
 Complete setup for a build with IceStorm tools under Linux.
 
 NEW: 48bit Floating Point Library
+NEW: Added TEK4010/4014 Vector Graphics Library
 
 The build does not require any tools except IceCube2 or IceStorm. The ram source
 includes the nucleus.fs words image (Mecrisp-Ice Forth).

@@ -1,9 +1,9 @@
-\ Basic TEK4010/4014 Graphics Vector Terminal Library
+\ A Basic TEK4010/4014 Vector Graphics Terminal Library
 \ 
 \ You need ie. TeraTerm or Xterm switched into the TEK4010/14 Emulation
 \ The current vector's addressing is 1024x1024 points (10bit)
 \
-\ For more information search the "TEK4010/4014 Graphics Vector Terminal"
+\ For more information search the "TEK4010/4014 Vector Graphics Terminal"
 \
 \ Provided as-is
 \ No warranties of any kind are provided
