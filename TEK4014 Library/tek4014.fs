@@ -7,7 +7,7 @@
 \
 \ Provided as-is
 \ No warranties of any kind are provided
-\ by IgorM 30 Jan 2018
+\ by IgorM 30-Jan-2018
 
 
 : tekcls ( -- )                     \ Clean the Tek window
