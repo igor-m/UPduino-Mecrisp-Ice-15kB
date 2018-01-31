@@ -11,14 +11,14 @@
 \ by IgorM 30-Jan-2018
 
 \ Colors for emit, plot, dot, mark
-0 constant black
+0 constant paper  \ the current paper color set in the TEK emulator
 1 constant red
 2 constant green
 3 constant yellow
 4 constant blue
 5 constant magenta
 6 constant cyan
-7 constant white
+7 constant ink    \ the current ink color set in the TEK emulator
 
 \ Line styles
 0 constant solid
@@ -107,8 +107,8 @@
 
 \ Examples:
 \ : rnd  ( u1 -- u2 ) random um* nip ; \ returns u2 from [0..u1-1]
-\ : test1 0 do 500 rnd 500 rnd 500 rnd 500 rnd tekline loop tekalpha ;
-\ : test2 0 do 500 rnd 500 rnd tekdot loop tekalpha ;
+\ : test1 0 do 600 rnd 600 rnd 600 rnd 600 rnd 8 rnd tekcolor tekline loop 7 tekcolor tekalpha ;
+\ : test2 0 do 600 rnd 600 rnd tekdot loop tekalpha ;
 \ : test3 0 do 500 rnd 500 rnd tekmark loop tekalpha ;
 \ s" PAAAAAAAAAAAAAADDBBBDDBBBHHBBBDDBBBHHBBHH" teksprite    \ draws a small ship
-\ 10000 test1 \ draws 10000 random lines inside a 500x500 area
+\ 1000 test1 \ draws 1000 random lines inside a 600x600 area
