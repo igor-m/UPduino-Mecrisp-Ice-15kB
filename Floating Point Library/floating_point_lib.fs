@@ -1,5 +1,5 @@
  \ ########### 48bit FOATING POINT LIBRARY #####################################
- \ To be used with Mecrisp-Ice Forth running on 16bit j1a CPU (UPduino b0ard)
+ \ To be used with Mecrisp-Ice Forth running on 16bit j1a CPU (UPduino board)
  \ Based on https://github.com/ForthHub/ForthFreak
  \ and https://sourceforge.net/projects/forth-4th/
  \ Assembled, modified, fixed ant tested by IgorM, 11 DEC 2017
@@ -252,7 +252,7 @@
  : F.            ( F: r -- )  (F.) PRECISION 1+ MIN TYPE SPACE ;
  : R.            ( F: r -- )  (F.) TYPE SPACE ;
  : (E.)          ( stepsize resolution -- | F: r -- ) \ X.XXXXXXEYY format
-                fdup f0= if 2drop fdrop ." 0.0" else
+                fdup f0= if 2drop fdrop ." 0.0 " else
                 >R FDUP FABS 0                  ( step 0 )
                 BEGIN   FDUP 1 S>F F<
                 WHILE   OVER - R@ S>F F*
