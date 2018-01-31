@@ -2,7 +2,7 @@
  \ To be used with Mecrisp-Ice Forth running on 16bit j1a CPU (UPduino board)
  \ Based on https://github.com/ForthHub/ForthFreak
  \ and https://sourceforge.net/projects/forth-4th/
- \ Assembled, modified, fixed ant tested by IgorM, 11 DEC 2017
+ \ Assembled, modified, fixed and tested by IgorM, 11 DEC 2017
  \ Provided as-is
  \ No warranties of any kind are provided
  \ ########### 48bit FOATING POINT LIBRARY #####################################
@@ -420,7 +420,7 @@ fclear
     fover fover f/ fatan               \ calculate arctan(y/x)
     fswap f0< if pi frot f0< if fnegate then f+ else fnip then
   then  ;                              \ adjust accordingly
- : fpow                                 ( f -- f') ( n --)
+ : f**                                 ( f -- f') ( n --)
   dup
   if dup 1 = if drop else 2 /mod fdup fdup f* recurse fswap recurse f* then
   else drop fdrop 1 s>f
@@ -455,6 +455,6 @@ fvariable lbase
   0 >integer integer> fraction s>f f+ ;
  : fln e (log) ;
  : flog f# 10.0 (log) ;
- : f** fdup f0= if fdrop fdrop f# 1.0 exit then fswap fln f* fexp ;
- : falog f# 10.0 fswap f** ;
+ : fpow fdup f0= if fdrop fdrop f# 1.0 exit then fswap fln f* fexp ;
+ : falog f# 10.0 fswap fpow ;
 \ ########### END OF 48bit FOATING POINT LIBRARY #######################

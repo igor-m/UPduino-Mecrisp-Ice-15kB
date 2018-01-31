@@ -105,9 +105,9 @@ f# 987654.321e112 fsqrt fe. \ 99.380799174E57
 
 f# 987654.321e-234 fsqrt fe. \ 993.807979345E-117      
 
+6 set-precision
+ 
 f# 987654.321e-234 fsqrt fs. \ 9.938080E-115      
-
- 6 set-precision
 
 \ 9.000 degree test must return 9.000 degree
 \ not with 9digits mantissa precision, however :)
@@ -126,11 +126,15 @@ f# 987654.321e-234 fsqrt fs. \ 9.938080E-115
 ;
 f# 9.000 trig9 fs. \ 9.000156e0      
 
-f# 123.456e3 7 fpow fs.  \ 4.371046e35      
+f# 123.456e3 7 f** fs.  \ 4.371046e35      
  
-f# 12345.567e345 fln fs.  \ 8.038129e2      
+f# 12345.567e345 fln fs.  \ 8.038129e2 
+
+f# 12345.567e345 flog fs.  \ 3.490915e2      
  
-  
+f# 123.4 f# 8.99 fpow fs.   \ 6.323001e18
+ 
+f# -5.55 fexp fs.  \ 3.887449e-3 
   
   
 
