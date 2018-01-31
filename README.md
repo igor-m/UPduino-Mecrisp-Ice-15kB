@@ -7,16 +7,19 @@ Essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
 
 Complete setup for a build with IceStorm tools under Linux.
 
-NEW: 48bit Floating Point Library
-NEW: Added TEK4010/4014 Vector Graphics Library
+NEW: Added "48bit Floating Point Library"
+
+NEW: Added "TEK4010/4014 Vector Graphics Library"
+
+NEW: Added "millis" and friends (based on the hw timer1 interrupt)
 
 The build does not require any tools except IceCube2 or IceStorm. The ram source
-includes the nucleus.fs words image (Mecrisp-Ice Forth).
-
-Works fine at 30MHz (an external oscillator) and 115k2 serial.
+includes the nucleus.fs words image already (Mecrisp-Ice Forth).
 
 It may require a better VCCPLL decoupling and pcb layout.
-(Update 16.1.2018: works with PLL at 30MHz, the board enhanced with a better decoupling).
+
+Update 16.1.2018: under IceCube2 it works with PLL at 30MHz, the board is enhanced with a better decoupling).
+Under IceStorm it works fine at 20MHz external clock.
 
 Modifications done:
 1. full 15kB block ram usage now
@@ -33,9 +36,9 @@ Within IceCube2:
 4. build the bitstream (size ~383 PLBs, and the timing estimate ~31.5MHz)
 5. flash the bitstream into the UPduino board
 6. upload the "basisdefinition15k.fs"
-7. option: upload the "floating_point_lib.fs"
-8. "3 save" - it saves the current dictionary into the onboard SPI flash, block #3
-9. next time upon reset the Mecrisp forth always loads itself from the block #3
+7. option: upload the "floating_point_lib.fs" when required
+8. "3 save" - it saves the current dictionary into the onboard SPI flash, the block #3
+9. next time upon the reset the Mecrisp forth always loads itself from the block #3
 
 You may save your actual dictionary in any block higher than #2 with "save" (ie. "10 save").
 A block here is 64kB.
@@ -48,9 +51,13 @@ Mind the UPduino's SPI flash is only 4MB large.
 
 The save/load always work with complete 15kB (the content of entire ram).
 
-The best Serial settings for fastest upload: 115k2, 8n2 (2 stopbits).
+
+The best Serial settings for fastest upload: 115k2, 8n2 (2 stopbits) with interrupt disabled (dint).
 
 Used with ie. TeraTerm: set LF/LF, 50ms line tx delay, when 8n1 used set char delay to 1ms.
+
+When interrupt enabled (eint) always use 1ms char delay.
+
 
 For more information on Mecrisp-Ice and Swapforth (J1a CPU model) you may see:
 
@@ -58,7 +65,7 @@ http://mecrisp.sourceforge.net/
 
 https://github.com/jamesbowman/swapforth
 ```
-Mecrisp-Ice 1.0
+Mecrisp-Ice 1.2
 
  ok.
  
@@ -72,7 +79,7 @@ F>D D>F FNEGATE FDROP FDUP FDEPTH FCLEAR SET-PRECISION PRECISION F2/ F2* normali
 ftemp' expx2 expx1 m1sto m1get fmove 'e2 'e1 'm3 'm2 'm1 longdiv *norm lstemp t+ t2/ t2* sign>exp 
 exp>sign frshift ud2/ d2/ du< ferror &esign &sign &unsign mxdig bicl ftemp fstak fsp digits -byfp 
 byfp fpmxst see seec disasm-step memstamp alu. name. disasm-cont disasm-$ insight .s dump new 
-cornerstone save erase spiwe waitspi m*/ t/ t* 2r@ 2r> 2>r tnegate 2constant 2variable random 
+cornerstone save erase spiwe waitspi m*/ t/ t* 2r@ 2r> 2>r tnegate 2constant 2variable timer1 random 
 randombit tickshh ticksh ticksl now ms endcase endof of case s" within pad unused ." mod / /mod move 
 u.r .r d.r rtype u. . d. ud. (d.) #> #s # sign hold <# hld BUF BUF0 pick roll spaces */ */mod fm/mod 
 sm/rem sgn constant variable m* >body create repeat while else <= >= u<= u>= ( [char] ['] eint? dint 
@@ -88,7 +95,7 @@ cells abs bounds umax umin max min 2over 2swap +! 2dup ?dup 2drop tuck -rot rot 
 here . 11828  ok.
 unused . 3532  ok.
   ok.
-pi f# 1.23456e-775 f/ fdup fs. fe.  2.544706e775 25.447065e774  ok.
+pi f# 1.23456e-775 f/ fs. 2.544706e775  ok.
 ```
 
 Thanks Matthias for his support with Mecrisp-Ice, and James for providing the j1a CPU.

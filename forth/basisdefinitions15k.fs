@@ -1,5 +1,5 @@
 \ Definitions in high-level Forth that can be compiled by the small
-\ nucleus itself. They are included into the bitstream for default.
+\ nucleus itself. They are not included into the bitstream for default.
 \ From Mecrisp-Ice repo
 
 \ Modification and Experiments for UPduino Board by IgorM 11 Dec 2017, 15kB version!
@@ -271,15 +271,9 @@ allot here constant BUF
     loop
 ; immediate
 
-: ms   ( u -- ) 0 do 2727 0 do loop loop ; \ 11 cycles per loop run. 30 MHz / 11 = 2727
-\ : leds ( x -- ) 6 lshift 8 io@ $3f and or 8 io! ;
+: ms   ( u -- ) 0 do 2727 0 do loop loop ; \ 11 cycles per loop run.. For 30 MHz / 11 = 2727
 
-\ : now   ( -- ) 0 $4000 io! ;
-\ : ticks ( -- u ) $4000 io@ ;
-
-\ : now   ( -- ) 0 $4000 io! ;
-\ : ticksl ( -- u ) $4000 io@ ;
-\ : ticksh ( -- u ) $8000 io@ ;
+: timer1 ( ud -- ) swap 110 io! 111 io! ;  \ load timer1 with a double value, counts down
 
 : now   ( -- ) 0 109 io! ;
 : ticksl ( -- u ) 105 io@ ;

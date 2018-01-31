@@ -216,11 +216,8 @@ module top(
 `define adr_ticksshh			16'd107  // 
 `define adr_ticksample			16'd109  // 
 
-`define adr_timer1l			16'd110  // 
-`define adr_timer1h			16'd111  // 
-`define adr_timer1cl			16'd112  // 
-`define adr_timer1ch			16'd113  // 
-`define adr_timer1			16'd119  // 
+`define adr_timer1cl			16'd110  // 
+`define adr_timer1ch			16'd111  // 
 
 `define adr_uart0			16'h1000 // 16'h1000
 
@@ -250,9 +247,29 @@ module top(
 
   always @(posedge clk)
     if (io_wr & (mem_addr == `adr_ticksample))  tickss[47:0] <= ticks;
+	
+	
+  // ###########  Periodic Timer1 (millis) #######################
+
+  reg [31:0] timer1 = 0;
+  reg [31:0] timer1c = 0;
+
+  wire [31:0] timer1_minus_1 = timer1 - 1;
+
+  always @(posedge clk)
+    if ( (io_wr & (mem_addr == `adr_timer1ch)) || (interrupt == 1) )
+        timer1[31:0] <= timer1c[31:0];
+    else
+        timer1 <= timer1_minus_1;
+
+  always @(posedge clk) // Generate interrupt on timer1 compare
+    if (timer1 == 1) 
+        interrupt <= 1;
+    else
+        interrupt <= 0;
 
 
- // ######   PORTA   ###########################################
+  // ######   PORTA   ###########################################
 
   reg  [15:0] porta_dir;   // 1:output, 0:input
   reg  [15:0] porta_out;
@@ -316,19 +333,19 @@ module top(
 
   // ######   RING OSCILLATOR   ###############################
 
-//  wire [1:0] buffers_in, buffers_out;
-//  assign buffers_in = {buffers_out[0:0], ~buffers_out[1]};
-//  SB_LUT4 #(
-//          .LUT_INIT(16'd2)
-//  ) buffers [1:0] (
-//         .O(buffers_out),
-//          .I0(buffers_in),
-//          .I1(1'b0),
-//          .I2(1'b0),
-//          .I3(1'b0)
-// );
+  wire [1:0] buffers_in, buffers_out;
+  assign buffers_in = {buffers_out[0:0], ~buffers_out[1]};
+  SB_LUT4 #(
+          .LUT_INIT(16'd2)
+  ) buffers [1:0] (
+         .O(buffers_out),
+          .I0(buffers_in),
+          .I1(1'b0),
+          .I2(1'b0),
+          .I3(1'b0)
+  );
 
-  wire random = 1'b1; // ~buffers_out[1];
+  wire random = ~buffers_out[1];
 
   // ######   IO PORTS   ######################################
 
@@ -355,8 +372,11 @@ module top(
   always @(posedge clk) begin
 
     if (io_wr & (mem_addr == `adr_porta_out))  porta_out <= dout;
-    if (io_wr & (mem_addr == `adr_porta_dir))  porta_dir <= dout;    
+    if (io_wr & (mem_addr == `adr_porta_dir))  porta_dir <= dout;
     if (io_wr & (mem_addr == `adr_pios))       {PIOS} <= dout[4:0];
+	
+    if (io_wr & (mem_addr == `adr_timer1cl))   timer1c[15:0] <= dout;
+    if (io_wr & (mem_addr == `adr_timer1ch))   timer1c[31:16] <= dout;
 
   end
 

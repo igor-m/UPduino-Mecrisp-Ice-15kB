@@ -1351,7 +1351,7 @@ header eint? :noname ( -- ? ) r@ d# 1 and 0<> ;
     [char] e 2emit
     [char] .
     [char] 1 2emit
-    [char] 0 emit
+    [char] 2 emit
     cr
 
    d# 3 load \ Try to load image from sector 3 if available. Bitstream is in sectors 0, 1, 2.
