@@ -61,7 +61,7 @@ module SB_RAM256x16(
     .RCLK(RCLK), .RCLKE(RCLKE), .RE(RE),
     .WCLK(WCLK), .WCLKE(WCLKE), .WE(WE),
     .WADDR(WADDR),
-    //.MASK(16'h0000), 
+    .MASK(16'h0000), 
 	.WDATA(WDATA) );
 
 assign RDATA = rd;
@@ -123,7 +123,7 @@ module SB_RAM2048x2(
     .RCLK(RCLK), .RCLKE(RCLKE), .RE(RE),
     .WCLK(WCLK), .WCLKE(WCLKE), .WE(WE),
     .WADDR(WADDR),
-    //.MASK(16'h0000), 
+    .MASK(16'h0000), 
 	.WDATA({4'b0, WDATA[1], 7'b0, WDATA[0], 3'b0}));
 
   assign RDATA[0] = rd[3];
@@ -162,6 +162,10 @@ module top(
 			inout wire PORTA13,
 			inout wire PORTA14,
 			inout wire PORTA15,
+			
+			output wire RGB0,
+			output wire RGB1,
+			output wire RGB2,
  
 			input wire resetq
 );
@@ -171,9 +175,9 @@ module top(
   wire clk ;
   assign clk = oscillator;
 
- // PLL not working reliably yet
- //my_pll my_pll_inst(.REFERENCECLK(oscillator),
- //                  .PLLOUTCORE(Hclk),
+ // PLL max 30MHz
+ // my_pll my_pll_inst(.REFERENCECLK(oscillator),
+ //                  .PLLOUTCORE(clk),
  //                  .PLLOUTGLOBAL(),
  //                  .RESET(1'b1)      );
 
@@ -388,5 +392,25 @@ module top(
   always @(negedge resetq or posedge clk)
   if (!resetq) unlocked <= 0;
   else         unlocked <= unlocked | io_wr;
+  
+  
+  // ######   RGB Tx/Rx indicato   ############################
+
+defparam RGBA_DRIVER.CURRENT_MODE = "0b1";
+
+defparam RGBA_DRIVER.RGB0_CURRENT = "0b000001";
+defparam RGBA_DRIVER.RGB1_CURRENT = "0b000001";
+defparam RGBA_DRIVER.RGB2_CURRENT = "0b000001";
+
+SB_RGBA_DRV RGBA_DRIVER (
+    .CURREN(1'b1),
+    .RGBLEDEN(1'b1),
+    .RGB0PWM(~TXD),
+    .RGB1PWM(~RXD),
+    .RGB2PWM(0),
+    .RGB0(RGB0),
+    .RGB1(RGB1),
+    .RGB2(RGB2)
+);
 
 endmodule // top
