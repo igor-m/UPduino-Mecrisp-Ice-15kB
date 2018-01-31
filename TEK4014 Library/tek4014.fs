@@ -1,14 +1,37 @@
 \ A Basic TEK4010/4014 Vector Graphics Terminal Library
 \ 
-\ You need ie. TeraTerm or Xterm switched into the TEK4010/14 Emulation
-\ The current vector's addressing is 1024x1024 points (10bit)
+\ You want ie. TeraTerm or Xterm switched into the TEK4010/14 Emulation
+\ The current vector's addressing mode is 1024x1024 pixels/points (10bit)
 \
 \ For more information search the "TEK4010/4014 Vector Graphics Terminal"
+\ or look at http://www.stm32duino.com/viewtopic.php?f=18&t=2336
 \
 \ Provided as-is
 \ No warranties of any kind are provided
 \ by IgorM 30-Jan-2018
 
+\ Colors for emit, plot, dot, mark
+0 constant black
+1 constant red
+2 constant green
+3 constant yellow
+4 constant blue
+5 constant magenta
+6 constant cyan
+7 constant white
+
+\ Line styles
+0 constant solid
+1 constant dotted
+2 constant dash_dotted
+3 constant short_dashed
+4 constant long_dashed
+
+\ Font sizes
+0 constant large
+1 constant normal
+2 constant small
+3 constant smallest
 
 : tekcls ( -- )                     \ Clean the Tek window
 		$1b emit $0c emit ;
@@ -24,10 +47,10 @@
 : tekfont ( size -- )               \ Select font size [0-3]
 		$1b emit $38 + emit ;
 		
-: tekstyle ( style -- )             \ Select line style [0-15]
+: tekstyle ( style -- )             \ Select line style [0-4]
 		$1b emit $60 + emit ;
 		
-: tekbstyle ( bstyle -- )           \ Select bold line style [??]
+: tekbstyle ( bstyle -- )           \ Select bold line style [0-4]
 		$1b emit $68 + emit ;
 		
 : tekalpha ( -- )                   \ Switch to the alphanumeric mode
@@ -69,6 +92,15 @@
 		$1e emit
 		type ; 
 		
+\ P - beam on
+\ space - beam off
+\ A, B, D, E, F, I, J, H - 45deg vector directions in 6 points displacements, the vector's 
+\ direction are as follows:
+\
+\      F  D  E
+\     B       A
+\      J  H  I
+
 : tekgin ( -- )                     \ Go to the Grapics-In mode
 		$1b emit
 		$1a emit ;
