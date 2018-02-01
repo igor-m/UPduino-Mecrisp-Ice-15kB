@@ -128,7 +128,7 @@
  : FDROP         ( fs: r -- )    -byfp fsp +! ;
  : FNEGATE       ( fs: r1 -- r3 ) 'e1 @ &sign XOR 'e1 ! ; 
  : D>F           ( d -- | -- r )  FDUP DUP 0< IF DNEGATE &sign ELSE 0 THEN
-                                  'e1 ! 'm1 2!  normalize ;								  
+                                  'e1 ! 'm1 2!  normalize ;
  : F>D           ( -- d | r -- )  expx1 >R DUP 1- 0<
                 IF NEGATE &unsign AND 'm1 frshift 'm1 2@ R> IF DNEGATE THEN
                 ELSE R> 2DROP -1 &unsign  1 ferror !   \ overflow: return maxdint
@@ -366,95 +366,116 @@
  : F#            ( <number> -- ) BL PARSE >FLOAT 0= ABORT" Bogus float"
                  STATE @ IF 'm1 _f# _f# _f# DROP FDROP POSTPONE (f#) THEN
                  ; IMMEDIATE
-fclear				 
- : pi ( r -- ) F# 3.1415926535897932384626433832795 ;
- : e  ( r -- ) F# 2.7182818284590452353602874713527 ; 
+
+fclear
+
+\ Transcendental functions -------------------------------------------
+
+ : pi ( r -- ) F# 3.14159265359 ;
+ : e  ( r -- ) F# 2.71828182846 ; 
  : deg>rad pi f* 180 s>f f/ ;
  : rad>deg 180 s>f f* pi f/ ;
-\ TRIGONOMETRIC FUNCTIONS 
+
  : >taylor fdup f* fover ;              \ setup for Taylor series
  : (taylor) fover f* frot fover d>f f/ ;
  : +taylor (taylor) f+ frot frot ;      \ add Taylor iteration
  : -taylor (taylor) f- frot frot ;      \ subtract Taylor iteration
  : >range                               \ Albert van der Horst
-  pi fdup f+                           ( x pi2)
-  fover fover f/                       ( x pi2 x/pi2)
-  floor fover f*                       ( x pi2 mod)
-  frot fswap f-                        ( pi2 mod)
-  pi fover                             ( pi2 mod pi mod)
-  f< if fswap f- else fnip then ;
- : fsin 
-  >range fdup >taylor                   ( x x2 x)
-         6. -taylor                     ( x-3 x2 x3)
-       120. +taylor                     ( x+5 x2 x5)
-      5040. -taylor                     ( x-7 x2 x7)
-    362880. +taylor                     ( x+9 x2 x9)
-  39916800. -taylor                     ( x-11 x2 x11)
-  fdrop fdrop ;                         ( x-11)
+      pi fdup f+                           ( x pi2)
+      fover fover f/                       ( x pi2 x/pi2)
+      floor fover f*                       ( x pi2 mod)
+      frot fswap f-                        ( pi2 mod)
+      pi fover                             ( pi2 mod pi mod)
+      f< if fswap f- else fnip then ;
+ 
+ : fsin
+      >range fdup >taylor                   ( x x2 x)
+             6. -taylor                     ( x-3 x2 x3)
+           120. +taylor                     ( x+5 x2 x5)
+          5040. -taylor                     ( x-7 x2 x7)
+        362880. +taylor                     ( x+9 x2 x9)
+      39916800. -taylor                     ( x-11 x2 x11)
+      fdrop fdrop ;                         ( x-11)
+ 
  : fcos
-  1 s>f fswap >range >taylor            ( 1 x2 1)
-          2. -taylor                    ( 1-2 x2 x2)
-         24. +taylor                    ( 1+4 x2 x4) 
-        720. -taylor                    ( 1-6 x2 x6)
-      40320. +taylor                    ( 1+8 x2 x8)
-    3628800. -taylor                    ( 1-10 x2 x10)
-  479001600. +taylor                    ( 1+12 x2 x12)
-  fdrop fdrop ;                         ( 1+12)
+      1 s>f fswap >range >taylor            ( 1 x2 1)
+              2. -taylor                    ( 1-2 x2 x2)
+             24. +taylor                    ( 1+4 x2 x4) 
+            720. -taylor                    ( 1-6 x2 x6)
+          40320. +taylor                    ( 1+8 x2 x8)
+        3628800. -taylor                    ( 1-10 x2 x10)
+      479001600. +taylor                    ( 1+12 x2 x12)
+      fdrop fdrop ;                         ( 1+12)
+ 
  : fsincos fdup fsin fswap fcos ;
+ 
  : ftan fsincos f/ ;                    \ ftan = fsin / fcos
+ 
  : 2degrees 2. d+ 2dup -taylor 2. d+ 2dup +taylor ;
  : (taylor2) 1. 2degrees 2degrees 2degrees 2degrees 2degrees 2drop fdrop fdrop ;
  : (fatan) fdup >taylor (taylor2) ;
  : dom2 1 s>f fover fdup f* fover f+ fsqrt f+ f/ (fatan) fdup f+ ;
  : dom3 1 s>f fswap f/ pi f2/ fover f0< if fnegate then fswap dom2 f- ;
  : dom2|3 1 s>f fover fabs f< if dom3 else dom2 then ;
+ 
  : fatan 1 s>f f2/ f2/ fover fabs f< if dom2|3 else (fatan) then ;
+ 
  : (fasin) 1 s>f fover fdup f* fover fswap f- fsqrt f+ f/ fatan fdup f+ ;
+ 
  : fasin fdup fabs 1 s>f f= if pi f2/ f* else (fasin) then ;
+ 
  : facos fasin pi f2/ fswap f- ;
- : fatan2                               ( sin[y] cos[x] -- rad)
-  fdup f0= if                          \ if x equals 0          
-    fdrop fdup f0= if 4 ferror ! exit then
-    f0< pi 2 s>f f/ if fnegate then    \ calculate the radian (equals pi/2)
-  else                                 \ if x doesn't equal zero
-    fover fover f/ fatan               \ calculate arctan(y/x)
-    fswap f0< if pi frot f0< if fnegate then f+ else fnip then
-  then  ;                              \ adjust accordingly
- : f**                                 ( f -- f') ( n --)
-  dup
-  if dup 1 = if drop else 2 /mod fdup fdup f* recurse fswap recurse f* then
-  else drop fdrop 1 s>f
-  then ;
+ 
+ : fatan2 ( sin[y] cos[x] -- rad)
+       fdup f0= if                        \ if x equals 0          
+       fdrop fdup f0= if 4 ferror ! exit then
+       f0< pi 2 s>f f/ if fnegate then    \ calculate the radian (equals pi/2)
+       else                               \ if x doesn't equal zero
+       fover fover f/ fatan               \ calculate arctan(y/x)
+       fswap f0< if pi frot f0< if fnegate then f+ else fnip then
+       then  ;                            \ adjust accordingly
+ 
+ : f**  ( x n -- x^n )
+       dup if dup 1 = if drop else 2 /mod fdup fdup f* recurse fswap recurse f* then
+       else drop fdrop 1 s>f then ;
+ 
  : d0< nip 0< ;
  : d>u drop ;
  : (!) over * swap 1+ swap ;
  : ^integer               ( float -- integer fraction )
-  fdup f>d 2dup d>f f- 1 s>f 2dup d0< -rot dabs d>u
-  0 ?do e f* loop if 1 s>f fswap f/ then fswap ;
+       fdup f>d 2dup d>f f- 1 s>f 2dup d0< -rot dabs d>u
+       0 ?do e f* loop if 1 s>f fswap f/ then fswap ;
  : ^fraction              ( integer fraction -- float )
-  1 dup dup s>f fswap fover
-  begin over 13 < while (!) dup s>d +taylor repeat
-  drop drop fdrop fdrop f* ;
-: fexp ^integer ^fraction ;
-fvariable epsilon
-fvariable lbase
+       1 dup dup s>f fswap fover
+       begin over 13 < while (!) dup s>d +taylor repeat
+       drop drop fdrop fdrop f* ;
+ 
+ : fexp ( x -- e^x ) ^integer ^fraction ;
+
+ fvariable epsilon
+ fvariable lbase
  : >integer begin fdup f# 1.0 f< while lbase f@ f* 1- repeat ;
  : integer> begin fdup lbase f@ f< 0= while lbase f@ f/ 1+ repeat ;
  : fraction
-  f# 0.0 f# 1.0 f2/ frot fdup f*
-  begin
-    fover epsilon f@ fswap f<
-  while
-    fdup lbase f@ f< 0=
-    if fswap frot fover f+ fswap frot lbase f@ f/ then
-    fswap f2/ fswap fdup f*
-  repeat fdrop fdrop ;
- : (log)                                \ set epsilon to 1e-34
-  lbase f! f# 1.0e-34 epsilon f!
-  fdup f0> 0= if 4 ferror ! exit then
-  0 >integer integer> fraction s>f f+ ;
- : fln e (log) ;
- : flog f# 10.0 (log) ;
- : fpow fdup f0= if fdrop fdrop f# 1.0 exit then fswap fln f* fexp ;
- : falog f# 10.0 fswap fpow ;
+       f# 0.0 f# 1.0 f2/ frot fdup f*
+       begin
+       fover epsilon f@ fswap f<
+       while
+       fdup lbase f@ f< 0=
+       if fswap frot fover f+ fswap frot lbase f@ f/ then
+       fswap f2/ fswap fdup f*
+       repeat fdrop fdrop ;
+ : (log)              \ set epsilon to 1e-34
+       lbase f! f# 1.0e-34 epsilon f!
+       fdup f0> 0= if 4 ferror ! exit then
+       0 >integer integer> fraction s>f f+ ;
+ 
+ : fln e (log) ;  \ ln(x)
+ 
+ : flog f# 10.0 (log) ;  \ log10(x)
+ 
+ : fpow fdup f0= if fdrop fdrop f# 1.0 exit then fswap fln f* fexp ;  \ x^y
+ 
+ : falog f# 10.0 fswap fpow ;   \ 10^x
+
 \ ########### END OF 48bit FOATING POINT LIBRARY #######################
