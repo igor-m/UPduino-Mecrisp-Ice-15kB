@@ -1,12 +1,12 @@
-## UPduino FPGA Mecrisp-Ice Forth with full 15kB of block ram
+# UPduino FPGA Mecrisp-Ice Forth with full 15kB of block ram
 
-# An experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
+## An experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
 
 Includes the essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
 
 Complete setup for a build with IceStorm tools under Linux.
 
-# News
+## News
 
 Added "48bit Floating Point Library"
 
@@ -14,7 +14,7 @@ Added "TEK4010/4014 Vector Graphics Library"
 
 Added "millis" and friends (based on the hw timer1 interrupt)
 
-# Build
+## Build
 
 The build does not require any other tools except the IceCube2 or the IceStorm. The ram's verilog source
 includes the nucleus.fs image already (the Mecrisp-Ice Forth latest).
@@ -47,9 +47,9 @@ With the IceCube2:
 8. "3 save" - it saves the current dictionary into the onboard SPI flash, the File #3
 9. upon Reset the Mecrisp Forth always loads itself from the File #3 (when not empty).
 
-# Load/Save
+## Load/Save
 
-You may save your current dictionary into any File number higher than #2 with "save" (ie. "10 save") anytime.
+You may save your current dictionary into any "File" with number higher than #2 with "save" (ie. "10 save") anytime.
 A File size here is 64kB.
 
 You may load a dictionary manually from any File higher than #2 with "load" (ie. "7 load") anytime.
@@ -58,7 +58,7 @@ Note: Mind the UPduino's SPI flash is only 4MB large.
 
 The save/load always works with complete 15kB - the content of entire ram.
 
-# Serial console
+## Serial console
 
 The best Serial settings for the fastest upload: 115k2, 8n2 (2 stopbits) with interrupt disabled (dint).
 
@@ -68,7 +68,7 @@ When interrupt is enabled (eint) always use 1ms char delay.
 
 You may change the baudrate in the uart.v (see the params - cpu freq and baudrate).
 
-# More info
+## More info
 
 For more information on Mecrisp-Ice and J1a CPU you may see:
 
