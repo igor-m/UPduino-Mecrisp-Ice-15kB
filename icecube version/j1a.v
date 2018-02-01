@@ -170,18 +170,32 @@ module top(
 			input wire resetq
 );
 
+  // ######   CPU CLOCKS   ###################################
 
+   wire clk ;
+  
+   // ### Option 1: External 30MHz oscillator (3.3V level)
+  
+   assign clk = oscillator;
 
-  wire clk ;
-  assign clk = oscillator;
+   // ### Option 2: Internal PLL based (max 30MHz with IceCube2)
+  
+   // my_pll my_pll_inst( 
+   //                   .REFERENCECLK(oscillator),
+   //                   .PLLOUTCORE(clk),
+   //                   .PLLOUTGLOBAL(),
+   //                   .RESET(1'b1)   );
+ 
+   // ### Option 3: Internal 24MHz (48MHz/2) oscillator
+ 
+   // SB_HFOSC OSCInst0(
+   //                  .CLKHFEN(1'b1),
+   //                  .CLKHFPU(1'b1),
+   //                  .CLKHF(clk)   );
+   // defparam OSCInst0.CLKHF_DIV = "0b01";  // 48MHz DIVIDED by 2
 
- // PLL max 30MHz
- // my_pll my_pll_inst(.REFERENCECLK(oscillator),
- //                  .PLLOUTCORE(clk),
- //                  .PLLOUTGLOBAL(),
- //                  .RESET(1'b1)      );
-
-
+  // ######   RAM   ###########################################
+  
   wire io_rd, io_wr;
   wire [15:0] mem_addr;
   wire mem_wr;
@@ -191,11 +205,11 @@ module top(
 
   reg unlocked = 0;
 
-`include "../build/ram_test.v"
+`include "../ram/ram_test.v"
+
+  // ######   J1a CPU   #######################################
 
   reg interrupt = 0;
-
-  // ######   PROCESSOR   #####################################
 
   j1 _j1(
     .clk(clk),
@@ -211,7 +225,7 @@ module top(
     .interrupt_request(interrupt)
   );
 
-// DEFINES for IOs and PERIPHERALs
+  // ######   DEFINES for IOs and PERIPHERALs #################
 
 `define adr_ticksl			16'd100  // 
 `define adr_ticksh			16'd101  // 
@@ -237,7 +251,7 @@ module top(
 
 
 
-  // ######   48 bit TICKS   #########################################
+  // ######   48 bit TICKS   #####################################
 
   reg  [47:0] ticks = 0;
   reg  [47:0] tickss = 0;
@@ -350,7 +364,7 @@ module top(
 
   // ######   IO PORTS   ######################################
 
-// READ REGISTERS
+ // READ REGISTERS
   assign io_din =
 
     ((mem_addr == `adr_porta_in) ?				porta_in	: 16'd0) |
@@ -369,7 +383,7 @@ module top(
   // Very few gates needed: Simply trigger warmboot by any IO access to $8000 / $8001 / $8002 / $8003.
   // SB_WARMBOOT _sb_warmboot ( .BOOT(io_wr & mem_addr[15]), .S1(mem_addr[1]), .S0(mem_addr[0]) );
 
-// WRITE REGISTERS
+ // WRITE REGISTERS
   always @(posedge clk) begin
 
     if (io_wr & (mem_addr == `adr_porta_out))  porta_out <= dout;
@@ -394,7 +408,7 @@ module top(
   else         unlocked <= unlocked | io_wr;
   
   
-  // ######   RGB Tx/Rx indicato   ############################
+  // ######   RGB Tx/Rx indicator   ############################
 
 defparam RGBA_DRIVER.CURRENT_MODE = "0b1";
 

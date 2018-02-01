@@ -1,65 +1,76 @@
-# UPduino Mecrisp-Ice with full 15kB ram
+## UPduino FPGA Mecrisp-Ice Forth with full 15kB of block ram
 
+# An experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
 
-An Experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
-
-Essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
+Includes the essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
 
 Complete setup for a build with IceStorm tools under Linux.
 
-NEW: Added "48bit Floating Point Library"
+# News
 
-NEW: Added "TEK4010/4014 Vector Graphics Library"
+Added "48bit Floating Point Library"
 
-NEW: Added "millis" and friends (based on the hw timer1 interrupt)
+Added "TEK4010/4014 Vector Graphics Library"
 
-The build does not require any tools except IceCube2 or IceStorm. The ram source
-includes the nucleus.fs words image already (Mecrisp-Ice Forth).
+Added "millis" and friends (based on the hw timer1 interrupt)
 
-It may require a better VCCPLL decoupling and pcb layout.
+# Build
 
-Update 16.1.2018: under IceCube2 it works with PLL at 30MHz, the board is enhanced with a better decoupling).
-Under IceStorm it works fine at 20MHz external clock.
+The build does not require any other tools except the IceCube2 or the IceStorm. The ram's verilog source
+includes the nucleus.fs image already (the Mecrisp-Ice Forth latest).
+
+Note: The UPduino board require much better decoupling and pcb layout.
+
+Update 16-JAN-2018: Works under the IceCube2 with PLL at 30MHz, the board has been enhanced with a better decoupling.
+Under the IceStorm it works fine at 20MHz external clock.
+
+Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCube2. 
+Oscillator's frequency 23.960MHz with +/-30kHz jitter (at ambient temperature). Works fine.
 
 Modifications done:
 1. full 15kB block ram usage now
-2. changes for Load/Save with UPduino (complete dictionary saved into the SPI flash)
+2. changes for load/save with UPduino (complete dictionary saved into the SPI flash "Files")
 3. experiments with linear io addressing
 4. experiments with 48bit ticks, atomic timestamp with "now"
 5. the ram_test.v prepared for IceCube2 and IceStorm (includes the nucleus.fs image)
 6. replaced the original uart.v with a more stable version
+7. etc.
 
-Within IceCube2:
+With the IceCube2:
 1. create a project
 2. copy the verilog files into the project as the source files
-3. copy the /build directory into the project
+3. copy the /ram directory into the project
 4. build the bitstream (size ~383 PLBs, and the timing estimate ~31.5MHz)
 5. flash the bitstream into the UPduino board
 6. upload the "basisdefinition15k.fs"
 7. option: upload the "floating_point_lib.fs" when required
-8. "3 save" - it saves the current dictionary into the onboard SPI flash, the block #3
-9. next time upon the reset the Mecrisp forth always loads itself from the block #3
+8. "3 save" - it saves the current dictionary into the onboard SPI flash, the File #3
+9. upon Reset the Mecrisp Forth always loads itself from the File #3 (when not empty).
 
-You may save your actual dictionary in any block higher than #2 with "save" (ie. "10 save").
-A block here is 64kB.
+# Load/Save
 
-When the block #3 contains a saved dictionary, it loads the disctionary upon reset from there.
+You may save your current dictionary into any File number higher than #2 with "save" (ie. "10 save") anytime.
+A File size here is 64kB.
 
-You may load a dictionary manually from any block higher than #2 with "load" (ie. "7 load").
+You may load a dictionary manually from any File higher than #2 with "load" (ie. "7 load") anytime.
 
-Mind the UPduino's SPI flash is only 4MB large.
+Note: Mind the UPduino's SPI flash is only 4MB large.
 
-The save/load always work with complete 15kB (the content of entire ram).
+The save/load always works with complete 15kB - the content of entire ram.
 
+# Serial console
 
-The best Serial settings for fastest upload: 115k2, 8n2 (2 stopbits) with interrupt disabled (dint).
+The best Serial settings for the fastest upload: 115k2, 8n2 (2 stopbits) with interrupt disabled (dint).
 
-Used with ie. TeraTerm: set LF/LF, 50ms line tx delay, when 8n1 used set char delay to 1ms.
+With ie. TeraTerm: set LF/LF, 50ms line tx delay, when 8n1 used set char tx delay to 1ms.
 
-When interrupt enabled (eint) always use 1ms char delay.
+When interrupt is enabled (eint) always use 1ms char delay.
 
+You may change the baudrate in the uart.v (see the params - cpu freq and baudrate).
 
-For more information on Mecrisp-Ice and Swapforth (J1a CPU model) you may see:
+# More info
+
+For more information on Mecrisp-Ice and J1a CPU you may see:
 
 http://mecrisp.sourceforge.net/
 

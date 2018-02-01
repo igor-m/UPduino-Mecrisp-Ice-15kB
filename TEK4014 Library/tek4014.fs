@@ -106,9 +106,18 @@
 		$1a emit ;
 
 \ Examples:
-\ : rnd  ( u1 -- u2 ) random um* nip ; \ returns u2 from [0..u1-1]
-\ : test1 0 do 600 rnd 600 rnd 600 rnd 600 rnd 8 rnd tekcolor tekline loop 7 tekcolor tekalpha ;
-\ : test2 0 do 600 rnd 600 rnd tekdot loop tekalpha ;
-\ : test3 0 do 500 rnd 500 rnd tekmark loop tekalpha ;
+
+: rnd  ( u1 -- u2 ) random um* nip ; \ returns u2 from [0..u1-1]
+
+\ : test1 ( n -- ) 0 do 600 rnd 600 rnd 600 rnd 600 rnd 8 rnd tekcolor tekline loop 7 tekcolor tekalpha ;
+\ : test2 ( n -- ) 0 do 600 rnd 600 rnd tekdot loop tekalpha ;
+\ : test3 ( n -- ) 0 do 500 rnd 500 rnd tekmark loop tekalpha ;
 \ s" PAAAAAAAAAAAAAADDBBBDDBBBHHBBBDDBBBHHBBHH" teksprite    \ draws a small ship
+
 \ 1000 test1 \ draws 1000 random lines inside a 600x600 area
+
+\ 500 test4 draws 500 quite miniscule inviders in random color
+: test4 ( n -- )
+     0 do 700 rnd 700 rnd 8 rnd tekcolor teklocate
+     s" PDEEFIAAAEJIIH DFPHHJ EPBBBBBIFDD APAHBD AAPAHBD DDDD" teksprite
+     loop ink tekcolor 50 720 teklocate ;
