@@ -19,7 +19,7 @@ Added "millis" and friends (based on the hw timer1 interrupt)
 The build does not require any other tools except the IceCube2 or the IceStorm. The ram's verilog source
 includes the nucleus.fs image already (the Mecrisp-Ice Forth latest).
 
-Note: The UPduino board require much better decoupling and pcb layout.
+Note: The UPduino board requires a much better decoupling and pcb layout..
 
 Update 16-JAN-2018: Works under the IceCube2 with PLL at 30MHz, the board has been enhanced with a better decoupling.
 Under the IceStorm it works fine at 20MHz external clock.
@@ -28,24 +28,33 @@ Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCub
 Oscillator's frequency 23.960MHz with +/-30kHz jitter (at ambient temperature). Works fine.
 
 Modifications done:
-1. full 15kB block ram usage now
-2. changes for load/save with UPduino (complete dictionary saved into the SPI flash "Files")
-3. experiments with linear io addressing
+
+1. full 15kB of block ram availbale for the Forth now
+2. changes for load/save with UPduino (s/l into the onboard bitstream SPI flash, the "Files")
+3. experiments with linear io addressing (instead of one-hot)
 4. experiments with 48bit ticks, atomic timestamp with "now"
-5. the ram_test.v prepared for IceCube2 and IceStorm (includes the nucleus.fs image)
-6. replaced the original uart.v with a more stable version
+5. millis with hw timer1 interrupt (works with 100kHz interrupt freq too)
+6. the ram_test.v prepared for IceCube2 and IceStorm (includes the nucleus.fs image)
 7. etc.
 
 With the IceCube2:
+
 1. create a project
-2. copy the verilog files into the project as the source files
+2. copy the icecube version verilog files into the project (as the source files)
 3. copy the /ram directory into the project
 4. build the bitstream (size ~383 PLBs, and the timing estimate ~31.5MHz)
-5. flash the bitstream into the UPduino board
+5. flash the bitstream into the UPduino's SPI flash (with your preffered method)
 6. upload the "basisdefinition15k.fs"
 7. option: upload the "floating_point_lib.fs" when required
 8. "3 save" - it saves the current dictionary into the onboard SPI flash, the File #3
 9. upon Reset the Mecrisp Forth always loads itself from the File #3 (when not empty).
+
+With the IceStorm:
+
+0. you must have the latest yosys/arachne-pnr/icestorm tools installed (see the IceStorm project)
+1. copy the icestorm version files into a directory
+2. cd to the directory and build it with sh compile
+3. upload the bitstream j1a0.bin into the SPI flash (with your preffered method).
 
 ## Load/Save
 
