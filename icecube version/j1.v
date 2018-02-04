@@ -1,6 +1,7 @@
 //`default_nettype none
 // From Mecrisp-Ice repo
-// Mod: interrupt address change for 15kB ram
+// IgorM: interrupt address change for 15kB ram
+// IgorM 4-Feb-2018: added 8 interrupts with priority encoder and en/dis int mask
 
 module j1(
   input wire clk,
@@ -8,33 +9,49 @@ module j1(
 
   output wire io_rd,
   output wire io_wr,
+  
   output wire [15:0] mem_addr,
   output wire mem_wr,
+  
   output wire [15:0] dout,
-
   input  wire [15:0] io_din,
 
   output wire [12:0] code_addr,
   input  wire [15:0] insn_from_memory,
-  input  wire interrupt_request
-);
-
-  reg interrupt_enable = 0;
-  wire interrupt = interrupt_request & interrupt_enable;
+  
+  input  wire [7:0] int_rqst    // 8 Interrupts, one-hot, msb the highest priority, lsb the lowest
+);  
 
   reg [4:0] rsp, rspN;          // Return stack pointer
   reg [4:0] dsp, dspN;          // Data stack pointer
   reg [15:0] st0, st0N;         // Top of data stack
   reg dstkW;                    // Data stack write
-
+  reg rstkW;                    // Return stack write
+  wire [15:0] rstkD;            // Return stack write value
+  reg [15:0] insn;  // was wire!!
   reg [13:0] pc, pcN;           // Program Counter
+  
+  reg interrupt_enable = 0;  
+  wire interrupt_request = |( int_rqst );  // Any of the interrupts is active??
+  wire interrupt = interrupt_request & interrupt_enable; // Mask it with Global interrupt enable
+  
+  always @* begin                // Interrupts - the Priority encoder
+    casex (int_rqst)
+      8'b1xxxxxxx : insn = interrupt ? 16'h5DFF : insn_from_memory;  // Interrupt: Execute "Call 3BFE"; Timer1
+      8'b01xxxxxx : insn = interrupt ? 16'h5DFE : insn_from_memory;  // Interrupt: Execute "Call 3BFC";
+      8'b001xxxxx : insn = interrupt ? 16'h5DFD : insn_from_memory;  // Interrupt: Execute "Call 3BFA";
+      8'b0001xxxx : insn = interrupt ? 16'h5DFC : insn_from_memory;  // Interrupt: Execute "Call 3BF8";
+      8'b00001xxx : insn = interrupt ? 16'h5DFB : insn_from_memory;  // Interrupt: Execute "Call 3BF6";
+      8'b000001xx : insn = interrupt ? 16'h5DFA : insn_from_memory;  // Interrupt: Execute "Call 3BF4";
+      8'b0000001x : insn = interrupt ? 16'h5DF9 : insn_from_memory;  // Interrupt: Execute "Call 3BF2";
+      8'b00000001 : insn = interrupt ? 16'h5DF8 : insn_from_memory;  // Interrupt: Execute "Call 3BF0";
+      default     : insn = insn_from_memory; 
+    endcase
+  end
 
-  wire [15:0] insn = interrupt ? 16'h5DFF : insn_from_memory;  // Interrupt: Execute "Call 3BFE" - change for 15kB ram, IgorM
   wire [13:0] pc_plus_1 = pc + {13'b0, ~interrupt};            // Do not increment PC for interrupts to continue later at the same location.
   wire fetch = pc[13] & ~interrupt;                            // Memory fetch data on pc[13] only valid if this is no interrupt entry.
 
-  reg rstkW;                    // Return stack write
-  wire [15:0] rstkD;            // Return stack write value
   reg notreboot = 0;
 
   assign mem_addr = st0[15:0];
@@ -48,7 +65,7 @@ module j1(
   stack2 #(.DEPTH(32)) dstack(.clk(clk), .rd(st1),  .we(dstkW), .wd(st0),   .delta(dspI));
 
   wire [16:0] minus = {1'b1, ~st0} + st1 + 1;
-
+  
   wire signedless = st0[15] ^ st1[15] ? st1[15] : minus[16];
   wire unsignedless = minus[16];
   wire zeroflag = minus[15:0] == 0;

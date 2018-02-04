@@ -8,11 +8,13 @@ Complete setup for a build with IceStorm tools under Linux.
 
 ## News
 
-Added "48bit Floating Point Library"
+Added: 8 interrupts with a priority encoder and an interrupt enable/disable mask
 
-Added "TEK4010/4014 Vector Graphics Library"
+Added: "millis" and friends (based on the hw timer1 interrupt)
 
-Added "millis" and friends (based on the hw timer1 interrupt)
+Added: "TEK4010/4014 Vector Graphics Library"
+
+Added: "48bit Floating Point Library"
 
 ## Build
 
@@ -55,6 +57,19 @@ With the IceStorm:
 1. copy the icestorm version files into a directory
 2. cd to the directory and build it with sh compile
 3. upload the bitstream j1a0.bin into the SPI flash (with your preffered method).
+
+## Interrupts
+
+There are 8 interrupts now, one-hot coding, 8th (bit 7) with the highest priority. The "eint" and "dint" are now
+global, and the particular interrupt can be enabled/disabled via the interrupt mask register, ie.:
+```
+$80 intmask!     \ enable the highest interrupt (INT_7 Timer1)
+intmask@ .x      \ 0080 read the int mask reg
+$00 intmask!     \ disable the highest interrupt (INT_7 Timer1)
+dint             \ global int disable
+eint             \ global int enable
+```
+Note: the Timer1 interrupt INT_7 works (see millis), not tested with several interrupts firing yet..
 
 ## Load/Save
 

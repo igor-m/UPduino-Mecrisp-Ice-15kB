@@ -19,9 +19,11 @@
 : tstart millis 2@ elpsd 2! ;
 : elapsed millis 2@ elpsd 2@ d- ;
 
-' imill 1 rshift $3BFE ! \ Generate JMP opcode for interrupt vector location
+' imill 1 rshift $3BFE ! \ Generate JMP opcode for interrupt 7 vector location
 
-eint
+$80 intmask!             \ Enable the Timer1 interrupt INT_7
+
+eint                     \ Global interrupt enable
 
 \ Examples:
 \ millis 2@ d. 22387  ok.

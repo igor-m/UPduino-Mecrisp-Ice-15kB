@@ -334,6 +334,12 @@ $608C $3BFE ! \ Location $3BFE (15kB ram) is the interrupt vector ! Place ALU ex
 
 \ : test 0 do cr now ticksl ticksh tickshh 30000 t/ 2000 ms now ticksl ticksh tickshh 30000 t/ 2swap d- d. cr loop ;
 
+\ Interrupts -  En/Dis Mask register handling
+
+: intmask! ( mask -- ) 50 io! ;
+: intmask@ ( -- mask ) 50 io@ ;
+
+
 \ #######   Flash   ###########################################
 
 \ Save memory image to SPI Flash - UPduino, N25Q032A 4MB SPI flash
