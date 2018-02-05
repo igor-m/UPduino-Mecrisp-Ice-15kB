@@ -142,7 +142,7 @@ module j1(
   wire eint = is_alu & func_eint;
   wire dint = is_alu & func_dint;
 
-  wire interrupt_enableN = (interrupt_enable | eint) & ~dint;
+  wire interrupt_enableN = (interrupt_enable | eint) & ~(interrupt | dint);
 
   // Value which could be written to return stack: Either return address in case of a call or TOS.
   assign rstkD = (insn[13] == 1'b0) ? {1'b0, pc_plus_1, interrupt_enable} : st0;

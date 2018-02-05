@@ -285,7 +285,23 @@ allot here constant BUF
 : randombit ( -- 0 | 1 ) $2000 io@ $20 and 5 rshift ;
 : random ( -- x ) 0  16 0 do 2* randombit or 100 0 do loop loop ;
 
-$608C $3BFE ! \ Location $3BFE (15kB ram) is the interrupt vector ! Place ALU exit opcode here.
+\ Interrupts -  Enable/Disable INT Mask register and INT Flags handling
+
+: intmask! ( mask -- ) 50 io! ;
+: intmask@ ( -- mask ) 50 io@ ;
+
+: intflag! ( mask -- ) 40 io! ;
+: intflag@ ( -- mask ) 40 io@ ;
+
+\ For 15kB of ram, interrupt vectors placed at the end of ram
+$608C $3BFE ! \ Location $3BFE is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BFC ! \ Location $3BFC is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BFA ! \ Location $3BFA is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BF8 ! \ Location $3BF8 is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BF6 ! \ Location $3BF6 is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BF4 ! \ Location $3BF4 is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BF2 ! \ Location $3BF2 is an interrupt vector ! Place ALU exit opcode here.
+$608C $3BF0 ! \ Location $3BF0 is an interrupt vector ! Place ALU exit opcode here.
 
 : 2variable
     create 2 cells allot
@@ -333,12 +349,6 @@ $608C $3BFE ! \ Location $3BFE (15kB ram) is the interrupt vector ! Place ALU ex
 : m*/  ( d . n u -- d . )  >r t*  r> t/ ;
 
 \ : test 0 do cr now ticksl ticksh tickshh 30000 t/ 2000 ms now ticksl ticksh tickshh 30000 t/ 2swap d- d. cr loop ;
-
-\ Interrupts -  En/Dis Mask register handling
-
-: intmask! ( mask -- ) 50 io! ;
-: intmask@ ( -- mask ) 50 io@ ;
-
 
 \ #######   Flash   ###########################################
 

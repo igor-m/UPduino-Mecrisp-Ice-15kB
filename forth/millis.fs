@@ -1,33 +1,39 @@
 
-\ millis() using the timer1 interrupt on Mecrisp-Ice
+\ millis() using the Timer1 interrupt INT_7
 
 \ Interrupt frequency = CPU_clk[Hz] / timer1
 
 \ Provided as-is
 \ No warranties of any kind are provided
 \ IgorM 31-Jan-2018
+\ IgorM  5-Feb-2018 - added clearing the interrupt via flags
 
+30000. timer1                      \ 1ms interrupt with 30MHz CPU clock
 
-30000. timer1           \ 1ms interrupt with 30MHz CPU clock
+2variable millis                   \ millis is a double
 
-2variable millis        \ millis is a double
+: imill ( -- )                     \ INT_7 Timer1 interrupt
+   dint                            \ disable interrupts
+   $80 not intflag! $ff intflag!   \ clear the INT_7 flag
+   
+   1. millis 2@  d+ millis 2!      \ increment the millis counter
 
-: imill ( -- )          \ timer1 interrupt
-   1. millis 2@  d+ millis 2! ;
+   eint                            \ enable interrupts
+   ;
 
-2variable elpsd
+' imill 1 rshift $3BFE !           \ Generate JMP opcode for INT_7 vector location
+
+2variable elpsd                    \ tstart..elapsed helpers
 : tstart millis 2@ elpsd 2! ;
 : elapsed millis 2@ elpsd 2@ d- ;
 
-' imill 1 rshift $3BFE ! \ Generate JMP opcode for interrupt 7 vector location
+$80 intmask!                       \ Enable the Timer1 interrupt INT_7
 
-$80 intmask!             \ Enable the Timer1 interrupt INT_7
-
-eint                     \ Global interrupt enable
+eint                               \ Global interrupt enable
 
 \ Examples:
 \ millis 2@ d. 22387  ok.
 \ millis 2@ d. 23309  ok.
 \ millis 2@ d. 24117  ok.
 
-\ tstart 3000 ms elapsed d. 3008  ok.
+tstart 3000 ms elapsed d.          \ 3008  ok.

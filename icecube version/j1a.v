@@ -211,8 +211,9 @@ module top(
 
   // ######   j1a CPU   ########################################
   
-    reg [7:0] interrupt = 0;  // 8 Interrupts, One-Hot, the bit 7 is the highest priority
-    reg [7:0] int_mask = 0;   // 1 means the x-th interrupt is enabled
+    reg [7:0] interrupt = 0;       // 8 Interrupts, One-Hot, the bit 7 is the highest priority
+    reg [7:0] int_mask = 0;        // intr enable mask - 1 means the x-th interrupt is enabled
+    reg [7:0] int_flags = 8'hFF;   // flags for clearing the interrupts precessed (out of ISR)
 
   j1 _j1(
     .clk(clk),
@@ -231,6 +232,7 @@ module top(
 
   // ######   DEFINES for IOs and PERIPHERALs   #################
 
+`define adr_int_flgs        16'd40   // 
 `define adr_int_mask        16'd50   // 
 
 `define adr_ticksl          16'd100  // 
@@ -274,7 +276,7 @@ module top(
      if (io_wr & (mem_addr == `adr_ticksample))  tickss[47:0] <= ticks;
 
 
-  // ###########  Periodic Timer1 (millis) INT_7 ################
+  // ###########  Periodic Timer1 (millis) INTERRUPT 7  ########
 
   reg [31:0] timer1 = 0;
   reg [31:0] timer1c = 0;
@@ -287,11 +289,13 @@ module top(
     else
         timer1 <= timer1_minus_1;
 
-  always @(posedge clk) // Generate interrupt INT_7 on timer1 compare
+  always @(posedge clk)                               // Generate interrupt INT_7 on timer1 compare
     if (timer1 == 1) 
-        interrupt[7] <= 1;
+        interrupt[7] <= 1;                            // Set the interrupt INT_7
     else
-        interrupt[7] <= 0;
+        // interrupt[7] <= 0;  // This is the correct version for the periodic timer
+        // Example of clearing the interrupt flag:
+        interrupt[7] <= interrupt[7] & int_flags[7];  // Reset the interrupt via the flag (out of ISR)
         
 
   // ######   PORTA   ###########################################
@@ -375,6 +379,7 @@ module top(
  
   assign io_din =
   
+    ((mem_addr == `adr_int_flgs)    ?   int_flags           : 16'd0) |
     ((mem_addr == `adr_int_mask)    ?   int_mask            : 16'd0) |
     
     ((mem_addr == `adr_porta_in)    ?   porta_in            : 16'd0) |
@@ -395,6 +400,7 @@ module top(
  
   always @(posedge clk) begin
   
+    if (io_wr & (mem_addr == `adr_int_flgs))  int_flags <= dout;
     if (io_wr & (mem_addr == `adr_int_mask))   int_mask <= dout;
 
     if (io_wr & (mem_addr == `adr_porta_out))  porta_out <= dout;
