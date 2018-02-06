@@ -24,7 +24,7 @@ Mecrisp-Ice 1.2
   eint cr 0 do  ok.
   millis 2@ d. space space counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. cr   ok.
   2000 ms loop ;  ok.
-1000 prtcount
+10000 prtcount
 1   1 1 1 1
 2008   1 1 1 1
 4050   3461 3462 3463 3464
