@@ -168,7 +168,12 @@ module top(
         output wire RGB1,
         output wire RGB2,
  
-        input wire resetq
+        input wire resetq,
+
+        input wire INTR0,
+        input wire INTR1,
+        input wire INTR2,
+        input wire INTR3
 );
 
   // ######   CPU CLOCKS   ###################################
@@ -256,6 +261,98 @@ module top(
 `define adr_pios            16'h8    // 16'h8
 
 `define adr_util1           16'h2000 // 16'h2000
+
+
+  // ######   INT_0  RISING EDGE  ################################
+  
+  reg int0_1, int0_2, int0_3;
+  wire int0re;
+  
+  // Input pin 3FF synchronizer
+  
+    always @(posedge clk)
+    begin
+        int0_1 <= INTR0;
+        int0_2 <= int0_1;
+        int0_3 <= int0_2;
+    end
+ 
+    assign int0re =  int0_2 & (~int0_3);
+ 
+    always @(posedge clk)
+    if (int0re == 1)
+        interrupts[0] <= 1;
+    else
+        interrupts[0] <= interrupts[0] & int_flags[0];
+
+
+  // ######   INT_1  RISING EDGE  ################################
+  
+  reg int1_1, int1_2, int1_3;
+  wire int1re;
+  
+  // Input pin 3FF synchronizer
+  
+    always @(posedge clk)
+    begin
+        int1_1 <= INTR1;
+        int1_2 <= int1_1;
+        int1_3 <= int1_2;
+    end
+ 
+    assign int1re =  int1_2 & (~int1_3);
+ 
+    always @(posedge clk)
+    if (int1re == 1)
+        interrupts[1] <= 1;
+    else
+        interrupts[1] <= interrupts[1] & int_flags[1];
+
+
+  // ######   INT_2  RISING EDGE  #################################
+  
+  reg int2_1, int2_2, int2_3;
+  wire int2re;
+  
+  // Input pin 3FF synchronizer
+  
+    always @(posedge clk)
+    begin
+        int2_1 <= INTR2;
+        int2_2 <= int2_1;
+        int2_3 <= int2_2;
+    end
+ 
+    assign int2re =  int2_2 & (~int2_3);
+ 
+    always @(posedge clk)
+    if (int2re == 1)
+        interrupts[2] <= 1;
+    else
+        interrupts[2] <= interrupts[2] & int_flags[2];
+
+
+  // ######   INT_3  RISING EDGE  #################################
+  
+  reg int3_1, int3_2, int3_3;
+  wire int3re;
+  
+  // Input pin 3FF synchronizer
+  
+    always @(posedge clk)
+    begin
+        int3_1 <= INTR3;
+        int3_2 <= int3_1;
+        int3_3 <= int3_2;
+    end
+    
+    assign int3re = int3_2 & (~int3_3);
+ 
+    always @(posedge clk)
+    if (int3re == 1)
+        interrupts[3] <= 1;
+    else
+        interrupts[3] <= interrupts[3] & int_flags[3];
 
 
   // ######   48 bit CPU TICKS   ##################################
