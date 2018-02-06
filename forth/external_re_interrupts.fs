@@ -54,7 +54,7 @@ dint
 \ $04 intmask!  \ INT2 enable
 \ $08 intmask!  \ INT3 enable 
 
-$10 $08 $04 $02 $01 or or or or intmask!      \ millis + INT3 + INT2 + INT1 + INT0 enabled
+$80 $08 $04 $02 $01 or or or or intmask!      \ millis + INT3 + INT2 + INT1 + INT0 enabled
 
 \ eint
 
@@ -68,7 +68,7 @@ $10 $08 $04 $02 $01 or or or or intmask!      \ millis + INT3 + INT2 + INT1 + IN
   dint
   0. millis 2! 
   0. counter0 2! 0. counter1 2!  0. counter2 2! 0. counter3 2!
-  $10 $08 $04 $02 $01 or or or or intmask! 
+  $80 $08 $04 $02 $01 or or or or intmask! 
   eint cr 
   0 do
   millis 2@ d. space space counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. cr 
