@@ -1,0 +1,41 @@
+This is a testing session, firing 5 interrupts via random patterns:
+1. millis         1000/sec
+2. INT0 external <100000/sec
+3. INT1 external <100000/sec
+4. INT2 external <100000/sec
+5. INT3 external <100000/sec
+
+The total number of interrupt (rising edge) events generated is <1mil for each INT0-3.
+Worst case there are 5 interrupts firing in the same time.
+The Generator used is the BluePill with "interrupts_generator2.ino" sketch.
+My J1 CPU clock frequency is 23.96MHz (the internal oscillator).
+
+The number of INT0-3 interrupt events processed shall match the sketch output.
+
+---------------------
+Mecrisp-Ice 1.2
+
+5 load
+23960. timer1  ok.
+
+$80 $08 $04 $02 $01 or or or or intmask!   ok.
+eint  ok.
+
+>>>> Start the "interrupts_generator2.ino" sketch and wait for "START in 10secs.."
+
+0. counter0 2! 0. counter1 2! 0. counter2 2! 0. counter3 2!  ok.
+
+>>>> sketch: "Generating.."
+
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 85011 84529 84933 84756  ok.
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 177163 176390 177753 177380  ok.
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 241488 240456 241687 241516  ok.
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 309632 308531 310518 309667  ok.
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 398639 397540 399426 398465  ok.
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 487688 486482 488360 487384  ok.
+
+>>>> sketch: "END.. 500430 499213 500949 499856"
+
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 500430 499213 500949 499856  ok.
+counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. 500430 499213 500949 499856  ok.
+
