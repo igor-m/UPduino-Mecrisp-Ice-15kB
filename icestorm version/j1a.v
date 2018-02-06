@@ -7,7 +7,7 @@
 // by IgorM 11-Dec-2017
 // Mind the SPI Flash on the UPduino board must be wired as below
 // IgorM 13-Jan-2018: removed obsolate HW 
-// IgorM 4-Feb-2018: Added 8 interrupts with priority encoder and interrupt's mask
+// IgorM 4-Feb-2018: Added 8 interrupts with priority encoder and interrupt's en/dis mask
 
 module SB_RAM256x16(
     output wire [15:0] RDATA,
@@ -211,9 +211,9 @@ module top(
 
   // ######   j1a CPU   ########################################
   
-    reg [7:0] interrupt = 0;       // 8 Interrupts, One-Hot, the bit 7 is the highest priority
-    reg [7:0] int_mask = 0;        // intr enable mask - 1 means the x-th interrupt is enabled
-    reg [7:0] int_flags = 8'hFF;   // flags for clearing the interrupts precessed (out of ISR)
+    reg [7:0] interrupt = 0;       // up to 8 Interrupts pending, one-hot, the bit 7 is the highest priority interrupt
+    reg [7:0] int_mask  = 0;       // intr enable mask - 1 means the x-th interrupt is enabled
+    reg [7:0] int_flags = 8'hFF;   // flags for clearing the processed pending interrupts (off the ISRs)
 
   j1 _j1(
     .clk(clk),
@@ -293,9 +293,8 @@ module top(
     if (timer1 == 1) 
         interrupt[7] <= 1;                            // Set the interrupt INT_7
     else
-        // interrupt[7] <= 0;  // This is the correct version for the periodic timer
-        // Example of clearing the interrupt flag:
-        interrupt[7] <= interrupt[7] & int_flags[7];  // Reset the interrupt via the flag (out of ISR)
+                                                      // Example of clearing the interrupt pending flag:
+        interrupt[7] <= interrupt[7] & int_flags[7];  // Clear the pending interrupt (off the ISR)
         
 
   // ######   PORTA   ###########################################
