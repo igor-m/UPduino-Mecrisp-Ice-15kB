@@ -133,11 +133,13 @@ unused . 3532  ok.
 pi f# 1.23456e-775 f/ fs. 2.544706e775  ok.
 ```
 
-Thanks Matthias for his support with Mecrisp-Ice, and James for providing the j1a CPU.
+My thanks to Matthias for his kind support with Mecrisp-Ice, to James for providing the j1a cpu,
+to Grant for creating the UPduino v1 and v2 boards, and Dave and Clifford for their support with 
+the IceStorm tools.
 
 Provided as-is.
 
-No warranties of any kind are provided.
+None warranties of any kind are provided.
 
 by IgorM, Dec 2017
 
