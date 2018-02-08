@@ -13,9 +13,10 @@
 2variable millis                   \ millis is a double
 
 : imill ( -- )                     \ INT_7 Timer1 interrupt
-   1. millis 2@  d+ millis 2!      \ ISR: increment the millis counter
-   $7F intflag! $FF intflag! eint  \ clear the INT_7 flag and enable interrupts
-   ;
+  $7F intflag! $FF intflag!        \ clear the INT_7 flag
+  1. millis 2@  d+ millis 2!       \ ISR: increment the millis counter
+  eint ;                           \ enable interrupts
+
 
 ' imill 1 rshift $3BFE !           \ Generate JMP opcode for INT_7 vector location
 

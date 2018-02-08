@@ -12,21 +12,25 @@
 2variable counter3 
 
 
-: icount0 ( -- )                            \ INT_0 interrupt  
-   1. counter0 2@  d+ counter0 2!           \ ISR
-   $FE intflag! $FF intflag! eint ;         \ clear the INT_0 flag and enable interrupts
+: icount0 ( -- )                            \ INT_0 interrupt   
+    $FE intflag! $FF intflag!               \ clear the INT_0 flag
+    1. counter0 2@  d+ counter0 2!          \ ISR
+    eint ;                                  \ enable interrupts
    
-: icount1 ( -- )                            \ INT_1 interrupt  
-   1. counter1 2@  d+ counter1 2!           \ ISR
-   $FD intflag! $FF intflag! eint ;         \ clear the INT_1 flag and enable interrupts
+: icount1 ( -- )                            \ INT_1 interrupt     
+    $FD intflag! $FF intflag!               \ clear the INT_1 flag
+    1. counter1 2@  d+ counter1 2!          \ ISR
+    eint ;                                  \ enable interrupts
 
 : icount2 ( -- )                            \ INT_2 interrupt  
-   1. counter2 2@  d+ counter2 2!           \ ISR
-   $FB intflag! $FF intflag! eint ;         \ clear the INT_2 flag and enable interrupts
+    $FB intflag! $FF intflag!               \ clear the INT_2 flag
+    1. counter2 2@  d+ counter2 2!          \ ISR
+    eint ;                                  \ enable interrupts
    
-: icount3 ( -- )                            \ INT_2 interrupt
-   1. counter3 2@  d+ counter3 2!           \ ISR
-   $F7 intflag! $FF intflag! eint ;         \ clear the INT_3 flag and enable interrupts
+: icount3 ( -- )                            \ INT_3 interrupt
+    $F7 intflag! $FF intflag!               \ clear the INT_3 flag
+    1. counter3 2@  d+ counter3 2!          \ ISR
+    eint ;                                  \ enable interrupts
    
 
 ' icount0 1 rshift $3BF0 ! \ INT0 - JMP opcode for the interrupt vector location
