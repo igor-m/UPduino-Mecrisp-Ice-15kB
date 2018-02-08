@@ -7,7 +7,7 @@ This is a testing session, firing 5 interrupts via random patterns:
 
 The total number of interrupt (rising edge) events generated is <1mil for each INT0-3.
 Worst case there are 5 interrupts firing in the same time.
-The Generator used is the BluePill with "interrupts_generator2.ino" sketch.
+The Generator used is the BluePill with "interrupts_pattern_generator2.ino" sketch.
 My J1 CPU clock frequency is 23.96MHz (the internal oscillator).
 
 The number of INT0-3 interrupt events processed shall match the sketch output.
