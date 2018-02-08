@@ -12,29 +12,21 @@
 2variable counter3 
 
 
-: icount0 ( -- ) 
-   dint    
-   $01 not intflag! $ff intflag!
-   1. counter0 2@  d+ counter0 2! 
-   eint ;
+: icount0 ( -- )                            \ INT_0 interrupt  
+   1. counter0 2@  d+ counter0 2!           \ ISR
+   $FE intflag! $FF intflag! eint ;         \ clear the INT_0 flag and enable interrupts
    
-: icount1 ( -- ) 
-   dint    
-   $02 not intflag! $ff intflag!
-   1. counter1 2@  d+ counter1 2! 
-   eint ;
+: icount1 ( -- )                            \ INT_1 interrupt  
+   1. counter1 2@  d+ counter1 2!           \ ISR
+   $FD intflag! $FF intflag! eint ;         \ clear the INT_1 flag and enable interrupts
 
-: icount2 ( -- ) 
-   dint    
-   $04 not intflag! $ff intflag!
-   1. counter2 2@  d+ counter2 2! 
-   eint ;
+: icount2 ( -- )                            \ INT_2 interrupt  
+   1. counter2 2@  d+ counter2 2!           \ ISR
+   $FB intflag! $FF intflag! eint ;         \ clear the INT_2 flag and enable interrupts
    
-: icount3 ( -- ) 
-   dint    
-   $08 not intflag! $ff intflag!
-   1. counter3 2@  d+ counter3 2! 
-   eint ;
+: icount3 ( -- )                            \ INT_2 interrupt
+   1. counter3 2@  d+ counter3 2!           \ ISR
+   $F7 intflag! $FF intflag! eint ;         \ clear the INT_3 flag and enable interrupts
    
 
 ' icount0 1 rshift $3BF0 ! \ INT0 - JMP opcode for the interrupt vector location
@@ -66,9 +58,9 @@ $80 $08 $04 $02 $01 or or or or intmask!      \ millis + INT3 + INT2 + INT1 + IN
 
  : prtcounters 
   dint
-  0. millis 2! 
   0. counter0 2! 0. counter1 2!  0. counter2 2! 0. counter3 2!
   $80 $08 $04 $02 $01 or or or or intmask! 
+  0. millis 2! 
   eint cr 
   0 do
   millis 2@ d. space space counter0 2@ d. counter1 2@ d. counter2 2@ d. counter3 2@ d. cr 
