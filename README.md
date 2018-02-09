@@ -8,13 +8,15 @@ Complete setup for a build with IceStorm tools under Linux.
 
 ## News
 
-Added: 8 interrupts with a priority encoder and an interrupt enable/disable mask
+Added:   16kWords od Single Port RAM (SPRAM)
 
-Added: "millis" and friends (based on the hw timer1 interrupt)
+Added:   8 interrupts (4 external) with a priority encoder and an interrupt enable/disable mask
 
-Added: "TEK4010/4014 Vector Graphics Library"
+Added:   "TEK4010/4014 Vector Graphics Library"
 
-Added: "48bit Floating Point Library"
+Added:   "48bit Floating Point Library"
+
+Added:   "millis" and friends (based on the hw timer1 interrupt)
 
 ## Build
 
@@ -58,6 +60,19 @@ With the IceStorm:
 2. cd to the directory and build it with sh compile
 3. upload the bitstream j1a0.bin into the SPI flash (with your preffered method).
 
+## Single Port RAM 
+
+You may now use 16kWords of internal single port ram, called SPRAM. The UP5k FPGA includes 4x 16kWords of SPRAM,
+currently only a single block is available off the Forth. 
+
+Note: The address is a 16bit word. The SPRAM range is 14bit only (0..$3FFF).
+Here the address range wraps around when the 2 higher address bits are used (4 mirrors).
+See the "spram.fs" with the examples.
+```
+$ABCD $3000 spramwr   \ writes $ABCD to the address $3000
+spramrd $3000 .x      \ reads from the address $3000
+```
+
 ## Interrupts
 
 There are 8 interrupts now, one-hot coding, 8th (bit 7) with the highest priority. The "eint" and "dint" are now
@@ -94,11 +109,16 @@ You may change the baudrate in the uart.v (see the params - cpu freq and baudrat
 
 ## More info
 
-For more information on Mecrisp-Ice and J1a CPU you may see:
+For more information on Mecrisp-Ice, J1a CPU, UPduino boards and IceStorm tool chain you may see:
 
 http://mecrisp.sourceforge.net/
 
 https://github.com/jamesbowman/swapforth
+
+http://www.latticesemi.com/en/Products/DevelopmentBoardsAndKits/GnarlyGreyUPDuinoBoard.aspx
+
+https://github.com/cliffordwolf/icestorm
+
 ```
 Mecrisp-Ice 1.2
 
@@ -133,8 +153,8 @@ unused . 3532  ok.
 pi f# 1.23456e-775 f/ fs. 2.544706e775  ok.
 ```
 
-My thanks to Matthias for his kind support with Mecrisp-Ice, to James for providing the j1a cpu,
-to Grant for creating the UPduino v1 and v2 boards, and Dave and Clifford for their support with 
+My thanks to MatthiasK for his kind support with Mecrisp-Ice, to JamesB for providing the j1a cpu,
+to Grant for creating the UPduino v1 and v2 boards, and DaveS and CliffordW for their support with 
 the IceStorm tools.
 
 Provided as-is.

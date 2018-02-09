@@ -8,6 +8,7 @@
 // Mind the SPI Flash on the UPduino board must be wired as below
 // IgorM 13-Jan-2018: removed obsolate HW 
 // IgorM 4-Feb-2018: Added 8 interrupts with priority encoder and interrupt's en/dis mask
+// IgorM 9-Feb-2018: Added 16kWords of Single Port RAM - SPRAM
 
 module SB_RAM256x16(
     output wire [15:0] RDATA,
@@ -236,31 +237,34 @@ module top(
   
 
   // ######   DEFINES for IOs and PERIPHERALs   #################
+  
+`define addr_pios            16'h8    // 16'h8
 
-`define adr_int_flgs        16'd40   // 
-`define adr_int_mask        16'd50   // 
+`define addr_int_flgs        16'd40   // 
+`define addr_int_mask        16'd50   // 
 
-`define adr_ticksl          16'd100  // 
-`define adr_ticksh          16'd101  // 
-`define adr_tickshh         16'd102  // 
+`define addr_ticksl          16'd100  // 
+`define addr_ticksh          16'd101  // 
+`define addr_tickshh         16'd102  // 
 
-`define adr_tickssl         16'd105  // 
-`define adr_tickssh         16'd106  // 
-`define adr_ticksshh        16'd107  // 
-`define adr_ticksample      16'd109  // 
+`define addr_tickssl         16'd105  // 
+`define addr_tickssh         16'd106  // 
+`define addr_ticksshh        16'd107  // 
+`define addr_ticksample      16'd109  // 
 
-`define adr_timer1cl        16'd110  // 
-`define adr_timer1ch        16'd111  // 
+`define addr_timer1cl        16'd110  // 
+`define addr_timer1ch        16'd111  // 
 
-`define adr_uart0           16'h1000 // 16'h1000
+`define addr_porta_in        16'd310  // 
+`define addr_porta_out       16'd311  // 
+`define addr_porta_dir       16'd312  // 
 
-`define adr_porta_in        16'd310  // 
-`define adr_porta_out       16'd311  // 
-`define adr_porta_dir       16'd312  // 
+`define addr_sram_data       16'd600  // SPRAM 16kWords
+`define addr_sram_addr       16'd601  // 
  
-`define adr_pios            16'h8    // 16'h8
+`define addr_uart0           16'h1000 // 16'h1000
 
-`define adr_util1           16'h2000 // 16'h2000
+`define addr_util1           16'h2000 // 16'h2000
 
 
   // ######   INT_0  RISING EDGE  ################################
@@ -370,7 +374,7 @@ module top(
   // sample the ticks with "now"
 
   always @(posedge clk)
-     if (io_wr & (mem_addr == `adr_ticksample))  tickss[47:0] <= ticks;
+     if (io_wr & (mem_addr == `addr_ticksample))  tickss[47:0] <= ticks;
 
 
   // ###########  Periodic Timer1 (millis) INTERRUPT 7  ########
@@ -381,7 +385,7 @@ module top(
   wire [31:0] timer1_minus_1 = timer1 - 1;
 
   always @(posedge clk)
-    if ( (io_wr & (mem_addr == `adr_timer1ch)) || ( interrupt[7] == 1 ) )
+    if ( (io_wr & (mem_addr == `addr_timer1ch)) || ( interrupt[7] == 1 ) )
         timer1[31:0] <= timer1c[31:0];
     else
         timer1 <= timer1_minus_1;
@@ -432,8 +436,8 @@ module top(
 
   wire uart0_valid, uart0_busy;
   wire [7:0] uart0_data;
-  wire uart0_wr = io_wr & (mem_addr == `adr_uart0);
-  wire uart0_rd = io_rd & (mem_addr == `adr_uart0);
+  wire uart0_wr = io_wr & (mem_addr == `addr_uart0);
+  wire uart0_rd = io_rd & (mem_addr == `addr_uart0);
   wire UART0_RX;
   buart _uart0 (
      .clk(clk),
@@ -475,37 +479,41 @@ module top(
  
   assign io_din =
   
-    ((mem_addr == `adr_int_flgs)    ?   int_flags           : 16'd0) |
-    ((mem_addr == `adr_int_mask)    ?   int_mask            : 16'd0) |
+    ((mem_addr == `addr_int_flgs)    ?   int_flags           : 16'd0) |
+    ((mem_addr == `addr_int_mask)    ?   int_mask            : 16'd0) |
     
-    ((mem_addr == `adr_porta_in)    ?   porta_in            : 16'd0) |
-    ((mem_addr == `adr_porta_out)   ?   porta_out           : 16'd0) |
-    ((mem_addr == `adr_porta_dir)   ?   porta_dir           : 16'd0) |
+    ((mem_addr == `addr_porta_in)    ?   porta_in            : 16'd0) |
+    ((mem_addr == `addr_porta_out)   ?   porta_out           : 16'd0) |
+    ((mem_addr == `addr_porta_dir)   ?   porta_dir           : 16'd0) |
 
-    ((mem_addr == `adr_pios)        ?   { 11'd0, PIOS}      : 16'd0) |
+    ((mem_addr == `addr_pios)        ?   { 11'd0, PIOS}      : 16'd0) |
+    
+    ((mem_addr == `addr_sram_data)   ?   sram_in[15:0]       : 16'd0) |
 
-    ((mem_addr == `adr_uart0)       ?   { 8'd0, uart0_data} : 16'd0) |
-    ((mem_addr == `adr_util1)       ?   {10'd0, random, 1'b1, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
+    ((mem_addr == `addr_uart0)       ?   { 8'd0, uart0_data} : 16'd0) |
+    ((mem_addr == `addr_util1)       ?   {10'd0, random, 1'b1, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
 
-    ((mem_addr == `adr_tickssl)     ?   tickss[15:0]        : 16'd0)|
-    ((mem_addr == `adr_tickssh)     ?   tickss[31:16]       : 16'd0)|
-    ((mem_addr == `adr_ticksshh)    ?   tickss[47:32]       : 16'd0) ;
+    ((mem_addr == `addr_tickssl)     ?   tickss[15:0]        : 16'd0)|
+    ((mem_addr == `addr_tickssh)     ?   tickss[31:16]       : 16'd0)|
+    ((mem_addr == `addr_ticksshh)    ?   tickss[47:32]       : 16'd0) ;
 
 
  // WRITE THE IO REGISTERS
  
   always @(posedge clk) begin
   
-    if (io_wr & (mem_addr == `adr_int_flgs))  int_flags <= dout;
-    if (io_wr & (mem_addr == `adr_int_mask))   int_mask <= dout;
+    if (io_wr & (mem_addr == `addr_int_flgs))    int_flags <= dout;
+    if (io_wr & (mem_addr == `addr_int_mask))    int_mask <= dout;
 
-    if (io_wr & (mem_addr == `adr_porta_out))  porta_out <= dout;
-    if (io_wr & (mem_addr == `adr_porta_dir))  porta_dir <= dout;
+    if (io_wr & (mem_addr == `addr_porta_out))   porta_out <= dout;
+    if (io_wr & (mem_addr == `addr_porta_dir))   porta_dir <= dout;
     
-    if (io_wr & (mem_addr == `adr_pios))       {PIOS} <= dout[4:0];
+    if (io_wr & (mem_addr == `addr_pios))        {PIOS} <= dout[4:0];
 
-    if (io_wr & (mem_addr == `adr_timer1cl))   timer1c[15:0] <= dout;
-    if (io_wr & (mem_addr == `adr_timer1ch))   timer1c[31:16] <= dout;
+    if (io_wr & (mem_addr == `addr_timer1cl))    timer1c[15:0] <= dout;
+    if (io_wr & (mem_addr == `addr_timer1ch))    timer1c[31:16] <= dout;
+    
+    if (io_wr & (mem_addr == `addr_sram_addr))   sram_addr[15:0] <= dout;
 
   end
 
@@ -539,6 +547,41 @@ module top(
         .RGB0(RGB0),
         .RGB1(RGB1),
         .RGB2(RGB2)
+    );
+    
+
+  // ######  16kW SPRAM  - Single Port RAM   ###################
+  
+  // Address is 14bit, 0..$3FFF
+  
+  reg  [15:0] sram_addr;
+  wire [15:0] sram_in;
+  reg  [15:0] sram_out;
+  
+  reg sram_wren;
+ 
+  always @(posedge clk)
+  begin
+    if (io_wr & (mem_addr == `addr_sram_data))
+    begin
+      sram_out <= dout;
+      sram_wren <= 1;
+    end else begin
+      sram_wren <= 0;
+    end
+  end
+
+    SB_SPRAM256KA ramfn_inst0(
+        .DATAIN(sram_out),
+        .ADDRESS(sram_addr),
+        .MASKWREN(4'b1111),
+        .WREN(sram_wren),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(sram_in)
     );
 
 endmodule // top
