@@ -8,7 +8,7 @@ Complete setup for a build with IceStorm tools under Linux.
 
 ## News
 
-Added:   16kWords od Single Port RAM (SPRAM)
+Added:   4 x 16kWords od Single Port RAM (SPRAM)
 
 Added:   8 interrupts (4 external) with a priority encoder and an interrupt enable/disable mask
 
