@@ -29,7 +29,7 @@ Update 16-JAN-2018: Works under the IceCube2 with PLL at 30MHz, the board has be
 Under the IceStorm it works fine at 20MHz external clock.
 
 Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCube2. 
-Oscillator's frequency 23.960MHz with +/-30kHz jitter (at ambient temperature). Works fine.
+Oscillator's frequency is 23.960MHz with +/-30kHz jitter (at ambient temperature). Works fine.
 
 Modifications done:
 
@@ -84,7 +84,9 @@ $00 intmask!     \ disable the highest interrupt (INT_7 Timer1)
 dint             \ global int disable
 eint             \ global int enable
 ```
-Note: the Timer1 interrupt INT_7 works (see millis), not tested with several interrupts firing yet..
+Note: there are ..duino sketches with patterns generators used with the interrupt's testing. So far 5 concurrently
+firing random interrupts (INT_7 millis, and 4 exernal rising edge sensitive INT_0-3) with 4usecs period are processed
+without a lost (ISRs are simple double counters counting the pulses). See the test results.
 
 ## Load/Save
 
@@ -154,7 +156,7 @@ pi f# 1.23456e-775 f/ fs. 2.544706e775  ok.
 ```
 
 My thanks to MatthiasK for his kind support with Mecrisp-Ice, to JamesB for providing the j1a cpu,
-to Grant for creating the UPduino v1 and v2 boards, and DaveS and CliffordW for their support with 
+to GrantJ for shipping the UPduino v1 and v2 boards, and DaveS and CliffordW for their support with 
 the IceStorm tools.
 
 Provided as-is.
