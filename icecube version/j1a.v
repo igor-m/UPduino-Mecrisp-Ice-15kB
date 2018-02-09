@@ -217,9 +217,9 @@ module top(
 
   // ######   j1a CPU   ########################################
   
-    reg [7:0] interrupt = 0;       // up to 8 Interrupts pending, one-hot, the bit 7 is the highest priority interrupt
+    reg [7:0] interrupt = 0;       // up to 8 Interrupts pending, the bit 7 is the highest priority interrupt
     reg [7:0] int_mask  = 0;       // intr enable mask - 1 means the x-th interrupt is enabled
-    reg [7:0] int_flags = 8'hFF;   // flags for clearing the processed pending interrupts (off the ISRs)
+    reg [7:0] int_flags = 8'hFF;   // flags for clearing the processed interrupts (off the ISRs)
 
   j1 _j1(
     .clk(clk),

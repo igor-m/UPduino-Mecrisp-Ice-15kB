@@ -75,8 +75,8 @@ $3000 spramrd .x      \ reads and prints out data from the address $3000
 
 ## Interrupts
 
-There are 8 interrupts now, one-hot coding, 8th (bit 7) with the highest priority. The "eint" and "dint" are now
-global, and the particular interrupt can be enabled/disabled via the interrupt mask register, ie.:
+There are 8 interrupts now, INT_7 (bit 7) with the highest priority, INT_0 the lowest one. The "eint" and "dint" 
+are global, and the particular interrupt can be enabled/disabled via the interrupt mask register, ie.:
 ```
 $80 intmask!     \ enable the highest interrupt (INT_7 Timer1)
 intmask@ .x      \ 0080 read the int mask reg
@@ -84,6 +84,7 @@ $00 intmask!     \ disable the highest interrupt (INT_7 Timer1)
 dint             \ global int disable
 eint             \ global int enable
 ```
+All pending interrupts are being processed, the higher priority first.
 Note: there are ..duino sketches with patterns generators used with the interrupt's testing. So far 5 concurrently
 firing random interrupts (INT_7 millis, and 4 exernal rising edge sensitive INT_0-3) with 4usecs period are processed
 without a lost (ISRs are simple double counters counting the pulses). See the test results.
