@@ -70,7 +70,7 @@ Here the address range wraps around when the 2 higher address bits are used (4 m
 See the "spram.fs" with the examples.
 ```
 $ABCD $3000 spramwr   \ writes $ABCD to the address $3000
-spramrd $3000 .x      \ reads from the address $3000
+$3000 spramrd .x      \ reads and prints out data from the address $3000
 ```
 
 ## Interrupts
