@@ -62,15 +62,18 @@ With the IceStorm:
 
 ## Single Port RAM 
 
-You may now use 16kWords of internal single port ram, called SPRAM. The UP5k FPGA includes 4x 16kWords of SPRAM,
-currently only a single block is available off the Forth. 
+You may now use 4 x 16kWords of FPGA internal single port ram, called SPRAM.
 
-Note: The address is a 16bit word. The SPRAM range is 14bit only (0..$3FFF).
+Note: The Forth address is a 16bits word. The SPRAM hw range is 14bits only (0..$3FFF).
 Here the address range wraps around when the 2 higher address bits are used (4 mirrors).
-See the "spram.fs" with the examples.
+
+See the "spram.fs" with the examples how to write/read the 4 banks of sram memory.
+
 ```
-$ABCD $3000 spramwr   \ writes $ABCD to the address $3000
-$3000 spramrd .x      \ reads and prints out data from the address $3000
+$ABCD $3000 spramwr0   \ writes $ABCD to the Bank0, address $3000
+$3000 spramrd0 .x      \ reads and prints out data from the Bank0, address $3000
+$7777 $1000 spramwr3   \ writes $7777 to the Bank3, address $1000
+$1000 spramrd3 .x      \ reads and prints out data from the Bank3, address $1000
 ```
 
 ## Interrupts

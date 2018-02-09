@@ -8,7 +8,7 @@
 // Mind the SPI Flash on the UPduino board must be wired as below
 // IgorM 13-Jan-2018: removed obsolate HW 
 // IgorM 4-Feb-2018: Added 8 interrupts with priority encoder and interrupt's en/dis mask
-// IgorM 9-Feb-2018: Added 16kWords of Single Port RAM - SPRAM
+// IgorM 9-Feb-2018: Added 4x16kWords of Single Port RAM - SPRAM
 
 module SB_RAM256x16(
     output wire [15:0] RDATA,
@@ -259,8 +259,11 @@ module top(
 `define addr_porta_out       16'd311  // 
 `define addr_porta_dir       16'd312  // 
 
-`define addr_sram_data       16'd600  // SPRAM 16kWords
-`define addr_sram_addr       16'd601  // 
+`define adr_sram_data0       16'd600  // SPRAM 4 x 16kWords large banks
+`define adr_sram_data1       16'd601  // 
+`define adr_sram_data2       16'd602  // 
+`define adr_sram_data3       16'd603  // 
+`define adr_sram_addr        16'd610  // 
  
 `define addr_uart0           16'h1000 // 16'h1000
 
@@ -269,65 +272,54 @@ module top(
 
   // ######   INT_0  RISING EDGE  ################################
   
-  reg int0_1, int0_2, int0_3;
+  reg [2:0] int0dly;
   wire int0re;
   
-  // Input pin 3FF synchronizer
+  // INT0 input synchronizer and edge detector
   
-    always @(posedge clk)
-    begin
-        int0_1 <= INTR0;
-        int0_2 <= int0_1;
-        int0_3 <= int0_2;
-    end
+    always @(posedge clk) 
+        int0dly <= {int0dly[1:0], INTR0};
  
-    assign int0re =  int0_2 & (~int0_3);
- 
+    assign int0re = (int0dly[2:1] == 2'b01);     // rising edge detector
+    // assign int0fe = (int0dly[2:1] == 2'b10);  // falling edge detector
+
     always @(posedge clk)
     if (int0re == 1)
         interrupts[0] <= 1;
     else
         interrupts[0] <= interrupts[0] & int_flags[0];
-
-
+        
   // ######   INT_1  RISING EDGE  ################################
   
-  reg int1_1, int1_2, int1_3;
+  reg [2:0] int1dly;
   wire int1re;
   
-  // Input pin 3FF synchronizer
+  // INT1 input synchronizer and edge detector
   
-    always @(posedge clk)
-    begin
-        int1_1 <= INTR1;
-        int1_2 <= int1_1;
-        int1_3 <= int1_2;
-    end
+    always @(posedge clk) 
+        int1dly <= {int1dly[1:0], INTR1};
  
-    assign int1re =  int1_2 & (~int1_3);
- 
+    assign int1re = (int1dly[2:1] == 2'b01);     // rising edge detector
+    // assign int1fe = (int1dly[2:1] == 2'b10);  // falling edge detector
+    
     always @(posedge clk)
     if (int1re == 1)
         interrupts[1] <= 1;
     else
         interrupts[1] <= interrupts[1] & int_flags[1];
 
-
-  // ######   INT_2  RISING EDGE  #################################
+  // ######   INT_2  RISING EDGE  ################################
   
-  reg int2_1, int2_2, int2_3;
+  reg [2:0] int2dly;
   wire int2re;
   
-  // Input pin 3FF synchronizer
+  // INT2 input synchronizer and edge detector
   
-    always @(posedge clk)
-    begin
-        int2_1 <= INTR2;
-        int2_2 <= int2_1;
-        int2_3 <= int2_2;
-    end
+    always @(posedge clk) 
+        int2dly <= {int2dly[1:0], INTR2};
  
-    assign int2re =  int2_2 & (~int2_3);
+    assign int2re = (int2dly[2:1] == 2'b01);     // rising edge detector
+    // assign int2fe = (int2dly[2:1] == 2'b10);  // falling edge detector
  
     always @(posedge clk)
     if (int2re == 1)
@@ -335,22 +327,18 @@ module top(
     else
         interrupts[2] <= interrupts[2] & int_flags[2];
 
-
-  // ######   INT_3  RISING EDGE  #################################
+  // ######   INT_3  RISING SEDGE  ################################
   
-  reg int3_1, int3_2, int3_3;
+  reg [2:0] int3dly;
   wire int3re;
   
-  // Input pin 3FF synchronizer
+  // INT3 input synchronizer and edge detector
   
-    always @(posedge clk)
-    begin
-        int3_1 <= INTR3;
-        int3_2 <= int3_1;
-        int3_3 <= int3_2;
-    end
-    
-    assign int3re = int3_2 & (~int3_3);
+    always @(posedge clk) 
+        int3dly <= {int3dly[1:0], INTR3};
+ 
+    assign int3re = (int3dly[2:1] == 2'b01);     // rising edge detector
+    // assign int3fe = (int3dly[2:1] == 2'b10);  // falling edge detector
  
     always @(posedge clk)
     if (int3re == 1)
@@ -488,7 +476,10 @@ module top(
 
     ((mem_addr == `addr_pios)        ?   { 11'd0, PIOS}      : 16'd0) |
     
-    ((mem_addr == `addr_sram_data)   ?   sram_in[15:0]       : 16'd0) |
+    ((mem_addr == `adr_sram_data0)   ?   sram_in0[15:0]      : 16'd0) |
+    ((mem_addr == `adr_sram_data1)   ?   sram_in1[15:0]      : 16'd0) |
+    ((mem_addr == `adr_sram_data2)   ?   sram_in2[15:0]      : 16'd0) |
+    ((mem_addr == `adr_sram_data3)   ?   sram_in3[15:0]      : 16'd0) |
 
     ((mem_addr == `addr_uart0)       ?   { 8'd0, uart0_data} : 16'd0) |
     ((mem_addr == `addr_util1)       ?   {10'd0, random, 1'b1, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
@@ -550,38 +541,129 @@ module top(
     );
     
 
-  // ######  16kW SPRAM  - Single Port RAM   ###################
-  
-  // Address is 14bit, 0..$3FFF
+  // ######  4 x 16kW SPRAM  - Single Port RAM   #################
   
   reg  [15:0] sram_addr;
-  wire [15:0] sram_in;
-  reg  [15:0] sram_out;
   
-  reg sram_wren;
+  wire [15:0] sram_in0;
+  reg  [15:0] sram_out0;
+  
+  wire [15:0] sram_in1;
+  reg  [15:0] sram_out1;
+  
+  wire [15:0] sram_in2;
+  reg  [15:0] sram_out2;
+  
+  wire [15:0] sram_in3;
+  reg  [15:0] sram_out3;
+  
+  reg sram_wren0;
+  reg sram_wren1;
+  reg sram_wren2;
+  reg sram_wren3;
  
-  always @(posedge clk)
-  begin
-    if (io_wr & (mem_addr == `addr_sram_data))
-    begin
-      sram_out <= dout;
-      sram_wren <= 1;
-    end else begin
-      sram_wren <= 0;
-    end
-  end
+  // SPRAM bank 0
+ 
+      always @(posedge clk)
+      begin
+        if (io_wr & (mem_addr == `adr_sram_data0))
+        begin
+          sram_out0 <= dout;
+          sram_wren0 <= 1;
+        end else begin
+          sram_wren0 <= 0;
+        end
+      end
 
-    SB_SPRAM256KA ramfn_inst0(
-        .DATAIN(sram_out),
+    SB_SPRAM256KA  ramfn_inst0(
+        .DATAIN(sram_out0),
         .ADDRESS(sram_addr),
         .MASKWREN(4'b1111),
-        .WREN(sram_wren),
+        .WREN(sram_wren0),
         .CHIPSELECT(1'b1),
         .CLOCK(clk),
         .STANDBY(1'b0),
         .SLEEP(1'b0),
         .POWEROFF(1'b1),
-        .DATAOUT(sram_in)
+        .DATAOUT(sram_in0)
+);
+
+  // SPRAM bank 1
+ 
+      always @(posedge clk)
+      begin
+        if (io_wr & (mem_addr == `adr_sram_data1))
+        begin
+          sram_out1 <= dout;
+          sram_wren1 <= 1;
+        end else begin
+          sram_wren1 <= 0;
+        end
+      end
+
+    SB_SPRAM256KA  ramfn_inst1(
+        .DATAIN(sram_out1),
+        .ADDRESS(sram_addr),
+        .MASKWREN(4'b1111),
+        .WREN(sram_wren1),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(sram_in1)
+    );
+
+  // SPRAM bank 2
+ 
+      always @(posedge clk)
+      begin
+        if (io_wr & (mem_addr == `adr_sram_data2))
+        begin
+          sram_out2 <= dout;
+          sram_wren2 <= 1;
+        end else begin
+          sram_wren2 <= 0;
+        end
+      end
+
+    SB_SPRAM256KA  ramfn_inst2(
+        .DATAIN(sram_out2),
+        .ADDRESS(sram_addr),
+        .MASKWREN(4'b1111),
+        .WREN(sram_wren2),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(sram_in2)
+    );
+
+  // SPRAM bank 3
+ 
+      always @(posedge clk)
+      begin
+        if (io_wr & (mem_addr == `adr_sram_data3))
+        begin
+          sram_out3 <= dout;
+          sram_wren3 <= 1;
+        end else begin
+          sram_wren3 <= 0;
+        end
+      end
+
+    SB_SPRAM256KA  ramfn_inst3(
+        .DATAIN(sram_out3),
+        .ADDRESS(sram_addr),
+        .MASKWREN(4'b1111),
+        .WREN(sram_wren3),
+        .CHIPSELECT(1'b1),
+        .CLOCK(clk),
+        .STANDBY(1'b0),
+        .SLEEP(1'b0),
+        .POWEROFF(1'b1),
+        .DATAOUT(sram_in3)
     );
 
 endmodule // top
