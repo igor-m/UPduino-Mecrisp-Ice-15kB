@@ -1,7 +1,7 @@
-# For UPduino board
+# For UPduino v1 board
 
 # External 30MHz Xtal oscillator (3.3V level), use 50ohm resistor in series
-set_io oscillator 3 
+set_io oscillator 2 
 
 # Use 10k pullup and 100nF capacitor against GND
 set_io resetq 9 
@@ -17,31 +17,30 @@ set_io SPISI 14
 set_io SPISO 17  
  
 # PortA
-set_io PORTA0 32
-set_io PORTA1 31
-set_io PORTA2 34
-set_io PORTA3 20
-set_io PORTA4 10
-set_io PORTA5 19
-set_io PORTA6 18
-set_io PORTA7 25
-set_io PORTA8 13
-set_io PORTA9 21
-set_io PORTA10 38
-set_io PORTA11 26
-set_io PORTA12 37
-set_io PORTA13 28
-set_io PORTA14 23
-set_io PORTA15 27
+set_io PORTA0 25
+set_io PORTA1 18
+set_io PORTA2 26
+set_io PORTA3 27
+set_io PORTA4 38
+set_io PORTA5 23
+set_io PORTA6 35
+set_io PORTA7 43
+set_io PORTA8 19
+set_io PORTA9 36
+set_io PORTA10 32
+set_io PORTA11 37
+set_io PORTA12 31
+set_io PORTA13 34
+set_io PORTA14 20
+set_io PORTA15 28
 
 # Interrupts
-set_io INTR0 46
-set_io INTR1 45
-set_io INTR2 44
-set_io INTR3 48
+set_io INTR0 21
+set_io INTR1 4
+set_io INTR2 6
+set_io INTR3 3
 
 # RGB
 set_io RGB0 39
 set_io RGB1 40
 set_io RGB2 41
-
