@@ -412,7 +412,7 @@ $608C $3BF0 ! \ Location $3BF0 is an interrupt vector ! Place ALU exit opcode he
   else drop then \ Bitstream protection
 ;
 
-: cornerstone
+: marker
   create
     forth 2@        \ preserve FORTH and DP after this
     , 2 cells + ,
@@ -420,7 +420,7 @@ $608C $3BF0 ! \ Location $3BF0 is an interrupt vector ! Place ALU exit opcode he
     2@ forth 2! \ restore FORTH and DP
 ;
 
-cornerstone new
+marker new
 
 \ #######   DUMP   ############################################
 
