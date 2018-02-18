@@ -10,6 +10,41 @@
 // IgorM 4-Feb-2018: Added 8 interrupts with priority encoder and interrupt's en/dis mask
 // IgorM 9-Feb-2018: Added 4x16kWords of Single Port RAM - SPRAM
 
+
+  // ######   DEFINES for IOs and PERIPHERALs   #################
+  
+`define addr_pios            16'h8    // 16'h8
+
+`define addr_int_flgs        16'd40   // 
+`define addr_int_mask        16'd50   // 
+
+`define addr_ticksl          16'd100  // 
+`define addr_ticksh          16'd101  // 
+`define addr_tickshh         16'd102  // 
+
+`define addr_tickssl         16'd105  // 
+`define addr_tickssh         16'd106  // 
+`define addr_ticksshh        16'd107  // 
+`define addr_ticksample      16'd109  // 
+
+`define addr_timer1cl        16'd110  // 
+`define addr_timer1ch        16'd111  // 
+
+`define addr_porta_in        16'd310  // 
+`define addr_porta_out       16'd311  // 
+`define addr_porta_dir       16'd312  // 
+
+`define addr_sram_data0       16'd600  // SPRAM 4 x 16kWords large banks
+`define addr_sram_data1       16'd601  // 
+`define addr_sram_data2       16'd602  // 
+`define addr_sram_data3       16'd603  // 
+`define addr_sram_addr        16'd610  // 
+ 
+`define addr_uart0           16'h1000 // 16'h1000
+
+`define addr_util1           16'h2000 // 16'h2000
+
+
 module SB_RAM256x16(
     output wire [15:0] RDATA,
     input  wire RCLK, RCLKE, RE,
@@ -135,6 +170,7 @@ endmodule
 module top(
 
         input wire oscillator,
+        input wire resetq,
 
         output wire TXD,       // UART TX
         input  wire RXD,       // UART RX
@@ -165,8 +201,6 @@ module top(
         output wire RGB1,
         output wire RGB2,
  
-        input wire resetq,
-
         input wire INTR0,
         input wire INTR1,
         input wire INTR2,
@@ -208,7 +242,7 @@ module top(
 
   reg unlocked = 0;
 
-`include "../ram/ram_test.v"
+`include "ram_test.v"
 
 
   // ######   j1a CPU   ########################################
@@ -232,40 +266,6 @@ module top(
   );
   
 
-  // ######   DEFINES for IOs and PERIPHERALs   #################
-  
-`define addr_pios            16'h8    // 16'h8
-
-`define addr_int_flgs        16'd40   // 
-`define addr_int_mask        16'd50   // 
-
-`define addr_ticksl          16'd100  // 
-`define addr_ticksh          16'd101  // 
-`define addr_tickshh         16'd102  // 
-
-`define addr_tickssl         16'd105  // 
-`define addr_tickssh         16'd106  // 
-`define addr_ticksshh        16'd107  // 
-`define addr_ticksample      16'd109  // 
-
-`define addr_timer1cl        16'd110  // 
-`define addr_timer1ch        16'd111  // 
-
-`define addr_porta_in        16'd310  // 
-`define addr_porta_out       16'd311  // 
-`define addr_porta_dir       16'd312  // 
-
-`define adr_sram_data0       16'd600  // SPRAM 4 x 16kWords large banks
-`define adr_sram_data1       16'd601  // 
-`define adr_sram_data2       16'd602  // 
-`define adr_sram_data3       16'd603  // 
-`define adr_sram_addr        16'd610  // 
- 
-`define addr_uart0           16'h1000 // 16'h1000
-
-`define addr_util1           16'h2000 // 16'h2000
-
-
   // ######   INT_0  RISING EDGE  ################################
   
   reg [2:0] int0dly;
@@ -281,9 +281,9 @@ module top(
 
     always @(posedge clk)
     if (int0re == 1)
-        interrupts[0] <= 1;
+        interrupt[0] <= 1;
     else
-        interrupts[0] <= interrupts[0] & int_flags[0];
+        interrupt[0] <= interrupt[0] & int_flags[0];
         
   // ######   INT_1  RISING EDGE  ################################
   
@@ -300,9 +300,9 @@ module top(
     
     always @(posedge clk)
     if (int1re == 1)
-        interrupts[1] <= 1;
+        interrupt[1] <= 1;
     else
-        interrupts[1] <= interrupts[1] & int_flags[1];
+        interrupt[1] <= interrupt[1] & int_flags[1];
 
   // ######   INT_2  RISING EDGE  ################################
   
@@ -319,9 +319,9 @@ module top(
  
     always @(posedge clk)
     if (int2re == 1)
-        interrupts[2] <= 1;
+        interrupt[2] <= 1;
     else
-        interrupts[2] <= interrupts[2] & int_flags[2];
+        interrupt[2] <= interrupt[2] & int_flags[2];
 
   // ######   INT_3  RISING SEDGE  ################################
   
@@ -338,9 +338,9 @@ module top(
  
     always @(posedge clk)
     if (int3re == 1)
-        interrupts[3] <= 1;
+        interrupt[3] <= 1;
     else
-        interrupts[3] <= interrupts[3] & int_flags[3];
+        interrupt[3] <= interrupt[3] & int_flags[3];
 
 
   // ######   48 bit CPU TICKS   ##################################
@@ -468,10 +468,10 @@ module top(
 
     ((mem_addr == `addr_pios)        ?   { 13'd0, PIOS}      : 16'd0) |
     
-    ((mem_addr == `adr_sram_data0)   ?   sram_in0[15:0]      : 16'd0) |
-    ((mem_addr == `adr_sram_data1)   ?   sram_in1[15:0]      : 16'd0) |
-    ((mem_addr == `adr_sram_data2)   ?   sram_in2[15:0]      : 16'd0) |
-    ((mem_addr == `adr_sram_data3)   ?   sram_in3[15:0]      : 16'd0) |
+    ((mem_addr == `addr_sram_data0)   ?   sram_in0[15:0]      : 16'd0) |
+    ((mem_addr == `addr_sram_data1)   ?   sram_in1[15:0]      : 16'd0) |
+    ((mem_addr == `addr_sram_data2)   ?   sram_in2[15:0]      : 16'd0) |
+    ((mem_addr == `addr_sram_data3)   ?   sram_in3[15:0]      : 16'd0) |
 
     ((mem_addr == `addr_uart0)       ?   { 8'd0, uart0_data} : 16'd0) |
     ((mem_addr == `addr_util1)       ?   {10'd0, random, 2'b00, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
@@ -558,7 +558,7 @@ module top(
  
       always @(posedge clk)
       begin
-        if (io_wr & (mem_addr == `adr_sram_data0))
+        if (io_wr & (mem_addr == `addr_sram_data0))
         begin
           sram_out0 <= dout;
           sram_wren0 <= 1;
@@ -584,7 +584,7 @@ module top(
  
       always @(posedge clk)
       begin
-        if (io_wr & (mem_addr == `adr_sram_data1))
+        if (io_wr & (mem_addr == `addr_sram_data1))
         begin
           sram_out1 <= dout;
           sram_wren1 <= 1;
@@ -610,7 +610,7 @@ module top(
  
       always @(posedge clk)
       begin
-        if (io_wr & (mem_addr == `adr_sram_data2))
+        if (io_wr & (mem_addr == `addr_sram_data2))
         begin
           sram_out2 <= dout;
           sram_wren2 <= 1;
@@ -636,7 +636,7 @@ module top(
  
       always @(posedge clk)
       begin
-        if (io_wr & (mem_addr == `adr_sram_data3))
+        if (io_wr & (mem_addr == `addr_sram_data3))
         begin
           sram_out3 <= dout;
           sram_wren3 <= 1;

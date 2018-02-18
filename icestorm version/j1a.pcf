@@ -4,7 +4,7 @@
 set_io oscillator 3 
 
 # Use 10k pullup and 100nF capacitor against GND
-set_io reset 9 
+set_io resetq 9 
 
 # Serial 115k2 8n2, better use 470-1k resistors in series
 set_io RXD 47  
@@ -16,11 +16,6 @@ set_io SPISSB 16
 set_io SPISI 14  
 set_io SPISO 17  
  
-# InfraRed
-set_io PIO1_18 43
-set_io PIO1_19 6
-set_io PIO1_20 36
-
 # PortA
 set_io PORTA0 32
 set_io PORTA1 31
@@ -38,3 +33,15 @@ set_io PORTA12 37
 set_io PORTA13 28
 set_io PORTA14 23
 set_io PORTA15 27
+
+# Interrupts
+set_io INTR0 46
+set_io INTR1 45
+set_io INTR2 44
+set_io INTR3 48
+
+# RGB
+set_io RGB0 39
+set_io RGB1 40
+set_io RGB2 41
+
