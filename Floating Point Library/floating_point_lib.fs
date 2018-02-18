@@ -175,8 +175,12 @@
                 FNEGATE F+ ;
  : F<           ( -- flag ) ( F: r1 r2 -- )    \ Compare two floats
                 F- F0< ;
- : F=           ( -- flag ) ( F: r1 r2 -- )      \ Compare two floats
+ : F=           ( -- flag ) ( F: r1 r2 -- )    \ Compare two floats
                 F- F0= ;
+ : F> fswap F< ;
+ : F>= F< 0= ;
+ : F<> F= 0= ;
+ : F<= F> 0= ;
  : FLOOR        FDUP F0< FDUP F>D D>F FOVER F- F0= 0= AND F>D ROT
                 IF -1 S>D D+ THEN D>F ;
  : FROUND        ( fs: r1 -- r2 )                   \ Round to the nearest integer
