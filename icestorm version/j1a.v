@@ -144,10 +144,6 @@ module top(
         output wire SPISI,     // Flash SDI  --- fpga spiso   pin 14
         output wire SPISSB,    // Flash CS   --- fpga spissb  pin 16
 
-        output wire PIO1_18,   // IR TXD
-        input  wire PIO1_19,   // IR RXD
-        output wire PIO1_20,   // IR SD
-
         inout wire PORTA0,
         inout wire PORTA1,
         inout wire PORTA2,
@@ -437,8 +433,8 @@ module top(
 
   // ######  PIOS   ###################################
 
-  reg [4:0] PIOS;
-  assign {PIO1_20, PIO1_18, SPICLK, SPISI, SPISSB} = PIOS;
+  reg [2:0] PIOS;
+  assign {SPICLK, SPISI, SPISSB} = PIOS;
  
   // ######   RING OSCILLATOR   ###############################
 
@@ -470,7 +466,7 @@ module top(
     ((mem_addr == `addr_porta_out)   ?   porta_out           : 16'd0) |
     ((mem_addr == `addr_porta_dir)   ?   porta_dir           : 16'd0) |
 
-    ((mem_addr == `addr_pios)        ?   { 11'd0, PIOS}      : 16'd0) |
+    ((mem_addr == `addr_pios)        ?   { 13'd0, PIOS}      : 16'd0) |
     
     ((mem_addr == `adr_sram_data0)   ?   sram_in0[15:0]      : 16'd0) |
     ((mem_addr == `adr_sram_data1)   ?   sram_in1[15:0]      : 16'd0) |
@@ -478,7 +474,7 @@ module top(
     ((mem_addr == `adr_sram_data3)   ?   sram_in3[15:0]      : 16'd0) |
 
     ((mem_addr == `addr_uart0)       ?   { 8'd0, uart0_data} : 16'd0) |
-    ((mem_addr == `addr_util1)       ?   {10'd0, random, 1'b1, PIO1_19, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
+    ((mem_addr == `addr_util1)       ?   {10'd0, random, 2'b00, SPISO, uart0_valid, !uart0_busy} : 16'd0) |
 
     ((mem_addr == `addr_tickssl)     ?   tickss[15:0]        : 16'd0)|
     ((mem_addr == `addr_tickssh)     ?   tickss[31:16]       : 16'd0)|
@@ -495,7 +491,7 @@ module top(
     if (io_wr & (mem_addr == `addr_porta_out))   porta_out <= dout;
     if (io_wr & (mem_addr == `addr_porta_dir))   porta_dir <= dout;
     
-    if (io_wr & (mem_addr == `addr_pios))        {PIOS} <= dout[4:0];
+    if (io_wr & (mem_addr == `addr_pios))        {PIOS} <= dout[2:0];
 
     if (io_wr & (mem_addr == `addr_timer1cl))    timer1c[15:0] <= dout;
     if (io_wr & (mem_addr == `addr_timer1ch))    timer1c[31:16] <= dout;
