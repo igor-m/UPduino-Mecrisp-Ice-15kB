@@ -1,11 +1,11 @@
- \ ########### 48bit FOATING POINT LIBRARY #####################################
+ \ ########### 48bit FLOATING POINT LIBRARY #####################################
  \ To be used with Mecrisp-Ice Forth running on 16bit j1a CPU (UPduino board)
  \ Based on https://github.com/ForthHub/ForthFreak
  \ and https://sourceforge.net/projects/forth-4th/
  \ Assembled, modified, fixed and tested by IgorM, 11 DEC 2017
  \ Provided as-is
  \ No warranties of any kind are provided
- \ ########### 48bit FOATING POINT LIBRARY #####################################
+ \ ########### 48bit FLOATING POINT LIBRARY #####################################
 
  \ 48bit Floating Point representation uses three cells:
  \ 0 upper mantissa
@@ -24,7 +24,7 @@
  \ range: 2^(-16384)-0.5 <= X <= 2^(16384)-1 or X = 0
  \        or approx: 10^-4920 < X < 10^4920
  
- 16 CONSTANT fpmxst     \ the size of the sw floating point stack
+ 16 CONSTANT fpmxst                        \ the size of the sw floating point stack
 
  \ some useful constants
  3 CELLS CONSTANT byfp                     \ bytes per float
@@ -88,7 +88,7 @@
                  ROT DROP R> ;
  : longdiv       ( DA DB -- DA/DB )              \ fractional divide
                 0 0 ftemp 2!
-                bicl 2* 1+                  \ long division
+                bicl 2* 1+                       \ long division
                 0 ?DO 2OVER 2OVER DU<            \ double/double
                 IF 0
                 ELSE 2DUP 2>R D- 2R> 1           \ a b --> a-b b
@@ -113,7 +113,7 @@
                 'm1 2@ 2DUP OR
                 IF 0 ROT ROT expx1 >R *norm
                 R> >exp1 'm1 2!
-                ELSE 2DROP                  \ zero is a special case
+                ELSE 2DROP                              \ zero is a special case
                 THEN ;
 
  \ Floating Point Words
@@ -154,14 +154,14 @@
                  byfp fsp +! 2 + -byfp * fsp @ + m1get ;
  : FNIP          ( fs: r1 r2 -- r2 ) FSWAP FDROP ;
  : FROT          ( fs: r1 r2 r3 -- r2 r3 r1 )
-                 'm3 ftemp fmove 'm2 'm3 byfp 2* MOVE  ftemp m1get ;				 
+                 'm3 ftemp fmove 'm2 'm3 byfp 2* MOVE  ftemp m1get ;
  : tneg          ( d flag -- t )  \ conditionally negate d to form 3-cell t
                  0<> >R 2DUP OR 0<> R> AND IF DNEGATE -1 ELSE 0 THEN ;
  : F+            ( fs: r1 r2 -- r3 ) \ Add two floats
-                FDUP F0= IF FDROP EXIT THEN                      \ r2 = 0
-                FOVER F0= IF FNIP EXIT THEN                      \ r1 = 0
+                FDUP F0= IF FDROP EXIT THEN               \ r2 = 0
+                FOVER F0= IF FNIP EXIT THEN               \ r1 = 0
                 expx1 >R expx2 >R -  DUP 0<
-                IF NEGATE 'm1 frshift 0                    \ align exponents
+                IF NEGATE 'm1 frshift 0                   \ align exponents
                 ELSE DUP 'm2 frshift
                 THEN 'e2 @ +
                 'm2 2@ R> tneg
@@ -171,11 +171,11 @@
                 ELSE DROP 'm2 2!
                 THEN R> &sign AND sign>exp 'e2 !
                 FDROP normalize ;
- : F-           ( fs: r1 r2 -- r3 )            \ Subtract two floats
+ : F-           ( fs: r1 r2 -- r3 )                       \ Subtract two floats
                 FNEGATE F+ ;
- : F<           ( -- flag ) ( F: r1 r2 -- )    \ Compare two floats
+ : F<           ( -- flag ) ( F: r1 r2 -- )               \ Compare two floats
                 F- F0< ;
- : F=           ( -- flag ) ( F: r1 r2 -- )    \ Compare two floats
+ : F=           ( -- flag ) ( F: r1 r2 -- )               \ Compare two floats
                 F- F0= ;
  : F> fswap F< ;
  : F>= F< 0= ;
@@ -183,30 +183,30 @@
  : F<= F> 0= ;
  : FLOOR        FDUP F0< FDUP F>D D>F FOVER F- F0= 0= AND F>D ROT
                 IF -1 S>D D+ THEN D>F ;
- : FROUND        ( fs: r1 -- r2 )                   \ Round to the nearest integer
-                 expx1 >R NEGATE 1- 'm1 frshift          \ convert to half steps
-                 'm1 2@ 1 0 D+  SWAP -2 AND SWAP         \ round
-                 'm1 2! -1 R> >exp1 normalize ;          \ re-float
+ : FROUND        ( fs: r1 -- r2 )                         \ Round to the nearest integer
+                 expx1 >R NEGATE 1- 'm1 frshift           \ convert to half steps
+                 'm1 2@ 1 0 D+  SWAP -2 AND SWAP          \ round
+                 'm1 2! -1 R> >exp1 normalize ;           \ re-float
  : FMIN          ( F: r1 r2 -- rmin ) FOVER FOVER F<
                  IF FDROP ELSE FNIP THEN ;
  : FMAX          ( F: r1 r2 -- rmax ) FOVER FOVER F<
                  IF FNIP ELSE FDROP THEN ;
- : F*            ( fs: r1 r2 -- r3 )                \ Multiply two floats
+ : F*            ( fs: r1 r2 -- r3 )                      \ Multiply two floats
                 'm1 2@ 'm2 2@
                 OVER >R ftemp' 2!
                 OVER >R ftemp  2!
-                R> R> OR                                \ need long multiply?
+                R> R> OR                                  \ need long multiply?
                 IF FTEMP CELL+ @ FTEMP' CELL+ @ UM* &sign 0 D+ NIP \ round
                 FTEMP @ FTEMP' @ UM*
                 FTEMP CELL+ @ FTEMP' @ UM* 0 t+
                 FTEMP @ FTEMP' CELL+ @ UM* 0 t+
-                ELSE 0 ftemp @ ftemp' @ UM*                  \ lower parts are 0
-                THEN 2DUP OR 3 PICK OR                       \ zero?
+                ELSE 0 ftemp @ ftemp' @ UM*                \ lower parts are 0
+                THEN 2DUP OR 3 PICK OR                     \ zero?
                 IF expx1 >R expx2 >R + bicl 2* + *norm
                 R> R> XOR sign>exp 'e2 !
-                ELSE DROP                                    \ zero result
+                ELSE DROP                                  \ zero result
                 THEN 'm2 2! FDROP ;
- : F/           ( fs: r1 r2 -- r3 )              \ Divide r1 by r2
+ : F/           ( fs: r1 r2 -- r3 )                        \ Divide r1 by r2
                 FDUP F0=
                 IF FDROP -1 -1 'm1 2!  2 ferror !          \ div by 0, man= umaxint
                 'e1 @ &sign AND &esign 1- OR 'e1 !         \   exponent = maxint/2
@@ -220,7 +220,7 @@
                 >R 'm2 2! R> R> R> XOR sign>exp 'E2 !
                 FDROP
                 THEN ;
- : F~           ( f: r1 r2 r3 -- ) ( -- flag ) \ f-proximate
+ : F~           ( f: r1 r2 r3 -- ) ( -- flag )             \ f-proximate
                 FDUP F0<                              
                 IF FABS FOVER FABS 3 FPICK FABS F+ F*      \ r1 r2 r3*(r1+r2)
                 FROT FROT F- FABS FSWAP F<
@@ -236,10 +236,10 @@
 
  : fsplit        ( F: r -- ) ( fracdigits -- sign Dint Dfrac )
  \ Split float into integer component parts.
-                >R expx1 NIP FABS               \ int part must fit in a double
-                FDUP F>D 2DUP D>F F-            \ get int, leave frac
+                >R expx1 NIP FABS                     \ int part must fit in a double
+                FDUP F>D 2DUP D>F F-                  \ get int, leave frac
                 2 0 R> 0 ?DO  D2* 2DUP D2* D2* D+ LOOP     \ 2 * 10^precision
-                D>F F* F>D  1 0 D+ ud2/ ;       \ round
+                D>F F* F>D  1 0 D+ ud2/ ;             \ round
 
  \ (F.) uses PRECISION as the number of digits after the decimal. F. clips off
  \ the result to avoid displaying extra (possibly garbage) digits. However,
@@ -248,14 +248,14 @@
 
  : (F.)          ( F: r -- ) ( -- addr len )
  \ Convert float to a string
-                 <# FDEPTH 1- 0< IF 0 0 EXIT THEN \ empty stack -> blank
+                 <# FDEPTH 1- 0< IF 0 0 EXIT THEN      \ empty stack -> blank
                  PRECISION fsplit
                  PRECISION 0 ?DO  # LOOP  D+
                  PRECISION IF [CHAR] . HOLD THEN
                  #S ROT SIGN #> ;
  : F.            ( F: r -- )  (F.) PRECISION 1+ MIN TYPE SPACE ;
  : R.            ( F: r -- )  (F.) TYPE SPACE ;
- : (E.)          ( stepsize resolution -- | F: r -- ) \ X.XXXXXXEYY format
+ : (E.)          ( stepsize resolution -- | F: r -- )  \ X.XXXXXXEYY format
                 fdup f0= if 2drop fdrop ." 0.0 " else
                 >R FDUP FABS 0                  ( step 0 )
                 BEGIN   FDUP 1 S>F F<
@@ -280,7 +280,7 @@
                 'm1 2@                 \ x
                 R> IF ud2/ THEN        \ exponent was rounded
                 ftemp 2 CELLS + 2!     \ x*2^(2*bits/cell)
-                0 0  bicl 2 *           \ p = 0
+                0 0  bicl 2 *          \ p = 0
                 0 ?DO lstemp lstemp    \ shift left x into a 2 places
                 D2*                    \ shift left p one place
                 2DUP D2* ftemp 2@ D<
@@ -299,15 +299,15 @@
                 0 SWAP
                 ENDCASE ;
  0 variable flgood
- : fdigit?      ( a len -- a len n f )     \ get digit from the input string
+ : fdigit?      ( a len -- a len n f )      \ get digit from the input string
                 DUP 0<> >R
                 OVER C@ [CHAR] 0 - DUP 0< OVER 9 > OR 0=
                 R> AND  DUP
-                IF 2SWAP 1 /STRING 2SWAP   \ good digit, use it
+                IF 2SWAP 1 /STRING 2SWAP    \ good digit, use it
                 1 flgood +!
                 THEN ;
  : flint         ( addr len -- addr' len' )
-                BEGIN fdigit?                 \ get integer part
+                BEGIN fdigit?               \ get integer part
                 WHILE 10 S>F F* S>F F+
                 REPEAT DROP ;
  : flexp         ( addr len -- addr' len' ) \ get exponent
@@ -371,20 +371,20 @@
                  STATE @ IF 'm1 _f# _f# _f# DROP FDROP POSTPONE (f#) THEN
                  ; IMMEDIATE
 
-fclear
+ fclear
 
-\ Transcendental functions -------------------------------------------
+ \ Transcendental functions -------------------------------------------
 
  : pi ( r -- ) F# 3.14159265359 ;
  : e  ( r -- ) F# 2.71828182846 ; 
  : deg>rad pi f* 180 s>f f/ ;
  : rad>deg 180 s>f f* pi f/ ;
 
- : >taylor fdup f* fover ;              \ setup for Taylor series
+ : >taylor fdup f* fover ;                 \ setup for Taylor series
  : (taylor) fover f* frot fover d>f f/ ;
- : +taylor (taylor) f+ frot frot ;      \ add Taylor iteration
- : -taylor (taylor) f- frot frot ;      \ subtract Taylor iteration
- : >range                               \ Albert van der Horst
+ : +taylor (taylor) f+ frot frot ;         \ add Taylor iteration
+ : -taylor (taylor) f- frot frot ;         \ subtract Taylor iteration
+ : >range                                  \ Albert van der Horst
       pi fdup f+                           ( x pi2)
       fover fover f/                       ( x pi2 x/pi2)
       floor fover f*                       ( x pi2 mod)
@@ -413,7 +413,7 @@ fclear
  
  : fsincos fdup fsin fswap fcos ;
  
- : ftan fsincos f/ ;                    \ ftan = fsin / fcos
+ : ftan fsincos f/ ;                        \ ftan = fsin / fcos
  
  : 2degrees 2. d+ 2dup -taylor 2. d+ 2dup +taylor ;
  : (taylor2) 1. 2degrees 2degrees 2degrees 2degrees 2degrees 2drop fdrop fdrop ;
@@ -446,10 +446,10 @@ fclear
  : d0< nip 0< ;
  : d>u drop ;
  : (!) over * swap 1+ swap ;
- : ^integer               ( float -- integer fraction )
+ : ^integer ( float -- integer fraction )
        fdup f>d 2dup d>f f- 1 s>f 2dup d0< -rot dabs d>u
        0 ?do e f* loop if 1 s>f fswap f/ then fswap ;
- : ^fraction              ( integer fraction -- float )
+ : ^fraction ( integer fraction -- float )
        1 dup dup s>f fswap fover
        begin over 13 < while (!) dup s>d +taylor repeat
        drop drop fdrop fdrop f* ;
@@ -469,17 +469,17 @@ fclear
        if fswap frot fover f+ fswap frot lbase f@ f/ then
        fswap f2/ fswap fdup f*
        repeat fdrop fdrop ;
- : (log)              \ set epsilon to 1e-34
+ : (log)                                   \ set epsilon to 1e-34
        lbase f! f# 1.0e-34 epsilon f!
        fdup f0> 0= if 4 ferror ! exit then
        0 >integer integer> fraction s>f f+ ;
  
- : fln e (log) ;  \ ln(x)
+ : fln e (log) ;                           \ ln(x)
  
- : flog f# 10.0 (log) ;  \ log10(x)
+ : flog f# 10.0 (log) ;                    \ log10(x)
  
- : fpow fdup f0= if fdrop fdrop f# 1.0 exit then fswap fln f* fexp ;  \ x^y
+ : fpow fdup f0= if fdrop fdrop f# 1.0 exit then fswap fln f* fexp ;   \ x^y
  
- : falog f# 10.0 fswap fpow ;   \ 10^x
+ : falog f# 10.0 fswap fpow ;              \ 10^x
 
-\ ########### END OF 48bit FOATING POINT LIBRARY #######################
+\ ########### END OF 48bit FLOATING POINT LIBRARY #######################
