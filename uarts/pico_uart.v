@@ -17,7 +17,7 @@
  *
  */
  
-// Modified by Matthias for Mecrisp-Ice, HX8
+// Modified by MatthiasK for Mecrisp-Ice, HX8
 
 module simpleuart (
         input clk,
