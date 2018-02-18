@@ -414,13 +414,9 @@ module top(
 
   // an RxD 3FF input synchroniser
 
-  reg rxd1, rxd2, rxd3;
+  reg [2:0] rxddly;
   always @(posedge clk)
-    begin
-    rxd1 <= RXD;
-    rxd2 <= rxd1;
-    rxd3 <= rxd2;
-    end 
+    rxddly <= {rxddly[1:0], RXD};
 
   wire uart0_valid, uart0_busy;
   wire [7:0] uart0_data;
@@ -430,7 +426,7 @@ module top(
   buart _uart0 (
      .clk(clk),
      .resetq(1'b1),
-     .rx(rxd3),
+     .rx(rxddly[2]),
      .tx(TXD),
      .rd(uart0_rd),
      .wr(uart0_wr),
