@@ -1,7 +1,8 @@
 //`default_nettype none
 // From Mecrisp-Ice repo
 // IgorM: interrupt address change for 15kB ram
-// IgorM 4-Feb-2018: added 8 interrupts with priority encoder and en/dis int mask
+// IgorM  4-Feb-2018: added 8 interrupts with priority encoder and en/dis int mask
+// IgorM 19-Feb-2018: added MAC16 16x16 unsigned multiplier (um*)
 
 module j1(
   input wire clk,
@@ -70,8 +71,45 @@ module j1(
   wire unsignedless = minus[16];
   wire zeroflag = minus[15:0] == 0;
 
+  // IgorM: 16x16 MAC16 unsigned MULTIPLIER
+
+SB_MAC16 i_sbmac16 (
+    .A(st0),
+    .B(st1),
+    .C(16'h0000),
+    .D(16'h0000),
+    .O(umstar),
+    .CLK(0),
+    .CE(1),
+    .IRSTTOP(0),
+    .IRSTBOT(0),
+    .ORSTTOP(0),
+    .ORSTBOT(0),
+    .AHOLD(1),
+    .BHOLD(1),
+    .CHOLD(0),
+    .DHOLD(0),
+    .OHOLDTOP(0),
+    .OHOLDBOT(0),
+    .OLOADTOP(0),
+    .OLOADBOT(0),
+    .ADDSUBTOP(0),
+    .ADDSUBBOT(0),
+    .CO(),
+    .CI(0),
+// MAC cascading ports
+    .ACCUMCI(),
+    .ACCUMCO(),
+    .SIGNEXTIN(0),
+    .SIGNEXTOUT()     );
+
+defparam i_sbmac16.B_SIGNED                            = 1'b0 ;
+defparam i_sbmac16.A_SIGNED                            = 1'b0 ;
+defparam i_sbmac16.BOTOUTPUT_SELECT                    = 2'b11 ;
+defparam i_sbmac16.TOPOUTPUT_SELECT                    = 2'b11 ;
+
   // wire [31:0] umstar = 0;         // 43.51 MHz
-  wire [31:0] umstar = st0 * st1;    // 36.00 MHz
+  wire [31:0] umstar; // = st0 * st1;    // 36.00 MHz
   // wire [31:0] umstar = st1 * st0; // 34.53 MHz
 
   always @*
