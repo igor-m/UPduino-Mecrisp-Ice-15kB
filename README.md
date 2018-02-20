@@ -1,12 +1,17 @@
-# UPduino FPGA Mecrisp-Ice Forth with full 15kB of block ram
+# UPduino (v1, v2) FPGA board with Mecrisp-Ice Forth
 
 ## An experimental version of the Mecrisp-Ice Forth running on the J1a 16bit processor.
 
-Includes the essential files for a build with IceCube2 and UPduino board (Lattice iCE40UP5k).
+Includes the essential files for an easy build with IceCube2 and UPduino board (Lattice iCE40UP5k).
 
 Complete setup for a build with IceStorm tools under Linux.
 
+The UPduino v2 includes an onboard FT232H chip for easy programming.
+
+
 ## News
+
+Added:   IceStorm version - the 16x16 multiplier now with MAC16 module
 
 Added:   4 x 16kWords od Single Port RAM (SPRAM)
 
