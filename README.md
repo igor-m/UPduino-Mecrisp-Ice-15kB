@@ -28,13 +28,13 @@ Added:   "millis" and friends (based on the hw timer1 interrupt)
 The build does not require any other tools except the IceCube2 or the IceStorm. The ram's verilog source
 includes the nucleus.fs image already (the Mecrisp-Ice Forth latest).
 
-Note: The UPduino board requires a much better decoupling and pcb layout..
+Note: The UPduino v1 board requires an additional decoupling at VCCPLL and VCC..
 
 Update 16-JAN-2018: Works under the IceCube2 with PLL at 30MHz, the board has been enhanced with a better decoupling.
 Under the IceStorm it works fine at 20MHz external clock.
 
-Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCube2. 
-Oscillator's frequency is 23.960MHz with +/-30kHz jitter (at ambient temperature). Works fine.
+Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCube2 and IceStorm. 
+Oscillator's frequency here is 23.960MHz with +/-30kHz jitter (at ambient temperature).
 
 Modifications done:
 
