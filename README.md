@@ -11,6 +11,8 @@ The UPduino v2 includes an onboard FT232H chip for easy programming.
 
 ## News
 
+Added:   Lattice Radiant version - major changes in all primitives (ie. io, bram, spram)
+
 Added:   IceStorm version - the 16x16 multiplier now with MAC16 module
 
 Added:   4 x 16kWords od Single Port RAM (SPRAM)
