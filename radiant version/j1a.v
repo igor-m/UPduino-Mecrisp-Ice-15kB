@@ -411,19 +411,32 @@ module top(
  
   // ######   RING OSCILLATOR   ###############################
 
-  wire [1:0] buffers_in, buffers_out;
-  assign buffers_in = {buffers_out[0:0], ~buffers_out[1]};
-  LUT4 #(
-          .INIT(16'd2)
-  ) buffers [1:0] (
-          .Z(buffers_out),
-          .A(buffers_in),
-          .B(1'b0),
-          .C(1'b0),
-          .D(1'b0)
-  );
+  /**
+   *wire [1:0] buffers_in, buffers_out;
+   *assign buffers_in = {buffers_out[0:0], ~buffers_out[1]};
+   *LUT4 #(
+   *        .INIT(16'd2)
+   *) buffers [1:0] (
+   *        .Z(buffers_out),
+   *        .A(buffers_in),
+   *        .B(1'b0),
+   *        .C(1'b0),
+   *        .D(1'b0)
+   *);
+   */  
+  
+  //wire random = ~buffers_out[1];
+  
+  // This ring oscillator made of 3 INVs does not synthesize with Synplify Pro
+  // Works with LSE
+  
+  wire random; /* synthesis syn_keep=1 NOCLIP=1 */
+  wire k; /* synthesis syn_keep=1 NOCLIP=1 */
+  wire l; /* synthesis syn_keep=1 NOCLIP=1 */
 
-  wire random = ~buffers_out[1];
+  INV inv1 ( .A (random), .Z (k) );
+  INV inv2 ( .A (k), .Z (l) );
+  INV inv3 ( .A (l), .Z (random) );
   
 
   // ######   IO PORTS   ######################################
