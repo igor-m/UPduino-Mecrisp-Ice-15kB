@@ -116,9 +116,10 @@ dint             \ global int disable
 eint             \ global int enable
 ```
 All pending interrupts are being processed, the higher priority first.
-Note: there are ..duino sketches with patterns generators used with the interrupt's testing. So far 5 concurrently
-firing random interrupts (INT_7 millis, and 4 exernal rising edge sensitive INT_0-3) with 4usecs period are processed
-without a lost (ISRs are simple double counters counting the pulses). See the test results.
+
+Note: There are ..duino sketches in this repo with patterns generators used with the interrupts testing. So far 5 concurrently
+firing random interrupts (INT_7 w/ millis, and 4 external rising edge sensitive INT_0-3) with 4usecs period are processed
+without a single interrupt lost (the 4 ISRs are counters counting the incomming edges). See the test results.
 
 ## Load/Save
 
