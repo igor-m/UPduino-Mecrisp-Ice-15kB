@@ -67,6 +67,27 @@ With the IceStorm:
 2. cd to the directory and build it with sh compile
 3. upload the bitstream j1a0.bin into the SPI flash (with your preffered method).
 
+## PORTA - IO
+
+There is a 16bit wide Port A available. The individual bits can be set to an input or output.
+
+The io address 310 is the PORT A read address.
+
+The io address 311 is the PORT A write address.
+
+The io address 312 sets the PORT A pin direction (1-output, 0-input).
+
+```
+$8800 312 io!               \ set PA15 and PA11 to output, all others are inputs
+$8000 311 io!               \ set PA15=1 and PA11=0
+$8800 311 io!               \ set PA15=1 and PA11=1
+$0000 311 io!               \ set PA15=0 and PA11=0
+$0800 311 io!               \ set PA15=0 and PA11=1
+310 io@ .x 7FFF             \ read PORTA and print out hex result
+$8000 311 io!               \ set PA15=1 and PA11=0
+310 io@ .x F7FF             \ read PORTA and print out hex result
+```
+
 ## Single Port RAM 
 
 You may now use 4 x 16kWords of FPGA internal single port ram, called SPRAM.
