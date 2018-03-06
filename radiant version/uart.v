@@ -21,6 +21,8 @@
 // THE SOFTWARE.
 // 
 // Modification of interface for swapforth j1a use by Bernard Mentink 2016.
+
+
 module buart(
     input wire  clk, // The master clock for this module
     input wire resetq, // Synchronous reset, active low
