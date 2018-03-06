@@ -1,7 +1,7 @@
 //`default_nettype none
-// From Mecrisp-Ice repo
+// From Mecrisp-Ice repository
 // IgorM: interrupt address change for 15kB ram
-// IgorM 4-Feb-2018: added 8 interrupts with priority encoder and en/dis int mask
+// IgorM 4-Feb-2018: added 8 interrupts with priority encoder and en/dis interrupt mask
 
 module j1(
   input wire clk,
