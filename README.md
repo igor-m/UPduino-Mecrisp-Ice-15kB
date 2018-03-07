@@ -155,8 +155,8 @@ such no single interrupt is lost (the 4 ISRs are simple counters counting the in
 
 ## Load/Save
 
-You may save your current dictionary into any "File" with number higher than #2 with "N save" (ie. "10 save") anytime.
-A File size here is always 64kB. The Files n. 0, 1, 2 are used foir the FPGA bitstream.
+You may save your current dictionary into any "File" with a number higher than #2 with "N save" (ie. "10 save") anytime.
+A File size here is always 64kB. The File n. 0, 1, 2 are reserved for the FPGA bitstream.
 
 You may load a dictionary manually from any File n. higher than #2 with "N load" (ie. "7 load") anytime.
 
