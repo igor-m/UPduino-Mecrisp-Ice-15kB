@@ -86,6 +86,12 @@ $0800 311 io!               \ set PA15=0 and PA11=1
 310 io@ .x 7FFF             \ read PORTA and print out hex result
 $8000 311 io!               \ set PA15=1 and PA11=0
 310 io@ .x F7FF             \ read PORTA and print out hex result
+
+: blinks 0 do 
+    11 pinH                    \ PA11 = 1
+    11 pinL                    \ PA11 = 0
+    loop ;
+tstart 0 blinks elapsed d. 108   \ 0.108sec/65536 = 1.6usecs period
 ```
 
 ## Single Port RAM 
