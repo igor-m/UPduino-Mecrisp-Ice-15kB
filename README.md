@@ -67,6 +67,32 @@ With the IceStorm:
 2. cd to the directory and build it with sh compile
 3. upload the bitstream j1a0.bin into the SPI flash (with your preffered method).
 
+## CPU clock sources and frequency settings
+
+There are 3 options in j1a.v (or top.v) for the CPU clock source (clk signal)
+```
+   // ### Option 1: External 30MHz oscillator (3.3V level)
+   // ### Option 2: Internal PLL based (max 30MHz with IceCube2)
+   // ### Option 3: Internal 24MHz (48MHz/2) oscillator
+```
+Comment out the code based on your choice. Note: the max CPU clock freqency depends on several factors, 20-24MHz shall work in most cases.
+
+As of today there are 3 places you have to touch in order to set the CPU clock frequency of choice.
+
+1. in uart.v 
+```
+`define CLKFREQ   30000000                 // frequency of incoming signal 'clk'
+`define BAUD      115200
+```
+2. in \forth\basisdefinitions15k.fs, line 274
+```
+: ms   ( u -- ) 0 do 2727 0 do loop loop ; \ 11 cycles per loop run.. For 30 MHz / 11 = 2727
+```
+3. in \forth\millis.fs, line 11
+```
+30000. timer1                              \ 1ms interrupt with 30MHz CPU clock
+```
+
 ## PORTA - IO
 
 There is a 16bit wide Port A available. The individual bits can be set to an input or output.
@@ -87,11 +113,11 @@ $0800 311 io!               \ set PA15=0 and PA11=1
 $8000 311 io!               \ set PA15=1 and PA11=0
 310 io@ .x F7FF             \ read PORTA and print out hex result
 
-: blinks 0 do 
+: pulses 0 do 
     11 pinH                    \ PA11 = 1
     11 pinL                    \ PA11 = 0
     loop ;
-tstart 0 blinks elapsed d. 108   \ 0.108sec/65536 = 1.6usecs period
+tstart 0 pulses elapsed d. 108   \ 0.108sec/65536 = 1.6usecs period
 ```
 
 ## Single Port RAM 
