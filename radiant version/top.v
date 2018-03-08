@@ -430,13 +430,24 @@ module top(
   // This ring oscillator made of 3 INVs does not synthesize with Synplify Pro
   // Works with LSE
   
-  wire random; /* synthesis syn_keep=1 NOCLIP=1 */
-  wire k; /* synthesis syn_keep=1 NOCLIP=1 */
-  wire l; /* synthesis syn_keep=1 NOCLIP=1 */
+  //wire random; /* synthesis syn_keep=1 NOCLIP=1 */
+  //wire k; /* synthesis syn_keep=1 NOCLIP=1 */
+  //wire l; /* synthesis syn_keep=1 NOCLIP=1 */
 
-  INV inv1 ( .A (random), .Z (k) );
-  INV inv2 ( .A (k), .Z (l) );
-  INV inv3 ( .A (l), .Z (random) );
+  //INV inv1 ( .A (random), .Z (k) );
+  //INV inv2 ( .A (k), .Z (l) );
+  //INV inv3 ( .A (l), .Z (random) );
+  
+  // This ring oscillator works with both Synplify Pro and LSE [Lattice Tech Support]
+  
+    wire random; /* synthesis syn_keep=1 NOCLIP=1 */
+    wire k; /* synthesis syn_keep=1 NOCLIP=1 */
+    wire l; /* synthesis syn_keep=1 NOCLIP=1 */
+
+    BUF inv1 ( .A (random), .Z (k) )/* synthesis syn_noprune=1 */;
+    assign l = ~k;
+    // BUF inv2 ( .A (k), .Z (l) )/* synthesis syn_noprune=1 */;
+    BUF inv3 ( .A (l), .Z (random) )/* synthesis syn_noprune=1 */;
   
 
   // ######   IO PORTS   ######################################
