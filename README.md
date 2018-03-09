@@ -75,7 +75,10 @@ There are 3 options in j1a.v (or top.v) with the CPU clock sources (clk signal)
    // ### Option 2: Internal PLL based (max 30MHz with IceCube2)
    // ### Option 3: Internal 24MHz (48MHz/2) oscillator
 ```
-Uncomment the code based on your choice. Note: the max CPU clock freqency depends on several factors, 20-24MHz shall work in most cases.
+Uncomment the code based on your choice. 
+
+Note: the max CPU clock freqency depends on several factors and design options, 20-24MHz work in most cases. 
+For an reliable operation do not exceed 16MHz clock frequency.
 
 As of today there are 3 places you have to touch in order to set the CPU clock frequency of choice.
 
