@@ -27,15 +27,15 @@ Added:   "millis" and friends (based on the hw timer1 interrupt)
 
 ## Build
 
-The build does not require any other tools except the IceCube2, Radiant or the IceStorm. The bram's verilog source
-includes the nucleus.fs image already (the Mecrisp-Ice Forth latest).
+The build does not require any other tools except the IceCube2, Radiant or the IceStorm. The block ram verilog source
+"ram_test.v" includes the nucleus.fs image already (the Mecrisp-Ice Forth 1.2).
 
 Note: The UPduino v1 board requires an additional decoupling at VCCPLL and VCC..
 
-Update 16-JAN-2018: It works under the IceCube2 with PLL at 30MHz, the board has been enhanced with a better decoupling.
-Under the IceStorm it works fine at 20MHz external clock.
+Update 16-JAN-2018: It works under the IceCube2 with PLL up to 30MHz, the board has been enhanced with a better decoupling.
+Under the IceStorm it works up to 20MHz external clock.
 
-Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCube2 and IceStorm. 
+Update 1-FEB-2018: Tested with 24MHz (48/2) internal oscillator under the IceCube2, Radiant and IceStorm. 
 Oscillator's frequency measured is 23.960MHz with +/-30kHz jitter (at ambient temperature).
 
 Modifications done:
@@ -77,7 +77,8 @@ There are 3 options in j1a.v (or top.v) with the CPU clock sources (clk signal)
 ```
 Uncomment the code based on your choice. 
 
-Note: the max CPU clock freqency depends on several factors and design options, 20-24MHz work in most cases. 
+Note: the max CPU clock freqency depends on several factors and build options, 20-24MHz works in most cases. 
+
 For an reliable operation do not exceed 16MHz clock frequency.
 
 As of today there are 3 places you have to touch in order to set the CPU clock frequency of choice.
