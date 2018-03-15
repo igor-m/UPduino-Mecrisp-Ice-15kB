@@ -1,10 +1,12 @@
 
 \ EXAMPLE: External INT0, INT1, INT2 and INT3 interrupts based pulse counters
 \ INTs are rising edge sensitive
+\ 8kB version
 
 \ Provided as-is
 \ No warranties of any kind are provided
 \ IgorM 6-Feb-2018
+\ IgorM 14-Mar-2018
 
 2variable counter0 
 2variable counter1
@@ -33,10 +35,10 @@
     eint ;                                  \ enable interrupts
    
 
-' icount0 1 rshift $3BF0 ! \ INT0 - JMP opcode for the interrupt vector location
-' icount1 1 rshift $3BF2 ! \ INT1 - JMP opcode for the interrupt vector location
-' icount2 1 rshift $3BF4 ! \ INT2 - JMP opcode for the interrupt vector location
-' icount3 1 rshift $3BF6 ! \ INT3 - JMP opcode for the interrupt vector location
+' icount0 1 rshift $1FF0 ! \ INT0 - JMP opcode for the interrupt vector location
+' icount1 1 rshift $1FF2 ! \ INT1 - JMP opcode for the interrupt vector location
+' icount2 1 rshift $1FF4 ! \ INT2 - JMP opcode for the interrupt vector location
+' icount3 1 rshift $1FF6 ! \ INT3 - JMP opcode for the interrupt vector location
 
 dint
 

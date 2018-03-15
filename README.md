@@ -11,17 +11,19 @@ The UPduino v2 includes an onboard FT232H chip for easy programming.
 
 ## News
 
-Added:   Lattice Radiant version - major changes in all primitives (ie. io, bram, spram)
+Radiant Mini version - with 8kB bram only (to allow working with the Reveal Analyser)
 
-Added:   IceStorm version - the 16x16 multiplier made of an MAC16 DSP module
+Lattice Radiant version - major changes in all primitives (ie. io, bram, spram)
 
-Added:   All versions - 4 x 16kWords of Single Port RAM (SPRAM) available
+IceStorm version - the 16x16 multiplier made of an MAC16 DSP module
 
-Added:   8 interrupts (4 external) with a priority encoder and an interrupt enable/disable mask
+All versions - 4 x 16kWords of Single Port RAM (SPRAM) available
 
-Added:   "TEK4010/4014 Vector Graphics Library"
+8 interrupts (4 external) with a priority encoder and an interrupt enable/disable mask
 
-Added:   "48-bit Floating Point Library"
+"TEK4010/4014 Vector Graphics Library"
+
+"48-bit Floating Point Library"
 
 Added:   "millis" and friends (based on the hw timer1 interrupt)
 
